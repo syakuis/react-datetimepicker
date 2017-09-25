@@ -12,24 +12,34 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import Flatpickr from 'flatpickr';
 import locale from 'flatpickr/dist/l10n/ko';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const propTypes = {
-  datetimeRef: PropTypes.func,
-  timePicker: PropTypes.bool,
-  onChangeDatetime: PropTypes.func,
-  value: PropTypes.string,
-  render: PropTypes.func,
+  children: PropTypes.node,
+  onDatetime: PropTypes.func,
+  readOnly: PropTypes.bool,
+  type: PropTypes.string,
+  stringFormat: PropTypes.string,
+
+  // flatpickr config
+  dateFormat: PropTypes.string,
+  defaultDate: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+  ]),
+  clickOpens: PropTypes.bool,
+  allowInput: PropTypes.bool,
 };
 
 const defaultProps = {
-  render: undefined,
-  datetimeRef: undefined,
-  timePicker: false,
-  onChangeDatetime: undefined,
-  value: undefined,
+  children: undefined,
+  onDatetime: undefined,
+  readOnly: false,
+  type: 'date', // date, datetime, time
+  stringFormat: 'YYYYMMDD',
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -42,12 +52,12 @@ const defaultProps = {
   disable: [], // 해당 날짜를 선택할 수 없게 한다.
 
   dateFormat: 'Y-m-d',
-  defaultDate: null,
+  defaultDate: undefined,
   noCalendar: false, // 날짜 선택기 숨김 enableTime = true 시간 선택기 활성화됨.
   weekNumbers: false, // 주 번호를 표시한다.
   shorthandCurrentMonth: false, // 축약된 월 이름으로 사용여부
 
-  time_24hr: false, // AM:PM 선택기 사용하지 않고 24시로 표시여부
+  time_24hr: true, // AM:PM 선택기 사용하지 않고 24시로 표시여부
   defaultHour: 12,
   defaultMinute: 0,
   enableTime: false, // 시간 선택기 사용여부
@@ -75,75 +85,150 @@ class DatetimePicker extends Component {
 
     this.flatpickr = undefined;
     this.datetimeRef = undefined;
+    this.type = {};
+
+    switch (this.props.type) {
+      case 'datetime':
+        this.type = {
+          noCalendar: false,
+          enableTime: true,
+          dateFormat: 'Y-m-d H:i',
+          stringFormat: 'YYYYMMDDHHmm',
+        };
+        break;
+      case 'time':
+        this.type = {
+          noCalendar: true,
+          enableTime: true,
+          enableSeconds: true,
+          dateFormat: 'H:i:S',
+          stringFormat: 'HHmmss',
+        };
+        break;
+      default: {
+        const { dateFormat, stringFormat } = props;
+        this.type = { dateFormat, stringFormat };
+        break;
+      }
+    }
 
     this.onChange = this.onChange.bind(this);
+    this.onChangeSuccess = this.onChangeSuccess.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+    this.onOpen = this.onOpen.bind(this);
+    this.onClear = this.onClear.bind(this);
+    this.setDatetime = this.setDatetime.bind(this);
+    this.onChangeCallback = this.onChangeCallback.bind(this);
 
     this.state = {
-      datetime: undefined,
-      value: undefined,
+      datetime: [],
+      value: '',
+      valueChange: false,
     };
   }
 
   componentDidMount() {
+    const { children, onDatetime, type, stringFormat, ...props } = this.props;
+
     this.flatpickr = new Flatpickr(this.datetimeRef, {
-      ...this.getProps(),
+      ...props,
+      ...this.type,
       wrap: false,
       inline: false,
       clickOpens: false,
-      onChange: this.onChange,
+      allowInput: false,
+      parseDate: (date) => {
+        const d = moment(date, this.type.stringFormat);
+        return d.isValid() ? d.toDate() : null;
+      },
+      onChange: this.onChangeCallback,
     });
 
-    if (typeof this.props.datetimeRef === 'function') {
-      this.props.datetimeRef(this.datetimeRef);
-    }
+    if (this.props.defaultDate) this.flatpickr.setDate(this.props.defaultDate, true);
   }
 
   componentWillUnmount() {
     this.flatpickr.destroy();
     this.flatpickr = undefined;
     this.datetimeRef = undefined;
-    if (typeof this.props.datetimeRef === 'function') {
-      this.props.datetimeRef(undefined);
-    }
   }
 
-  onChange(datetime, value) {
+  onChangeCallback(datetime, value) {
     this.setState({ datetime, value });
-    if (typeof this.props.onChangeDatetime === 'function') this.props.onChangeDatetime(value, datetime);
+    if (typeof this.props.onDatetime === 'function') this.props.onDatetime(datetime, value);
 
     // this.flatpickr.setDate('2011-12-20', false);
     // this.flatpickr.toggle();
+  }
+
+  onChange(e) {
+    this.setState({
+      value: e.target.value,
+      valueChange: true,
+    });
+  }
+
+  onChangeSuccess() {
+    this.setDatetime(this.state.value);
+    this.setState({
+      valueChange: false,
+    });
+  }
+
+  onKeyPress(e) {
+    if (e.key === 'Enter') {
+      this.onChangeSuccess();
+    }
   }
 
   onOpen() {
     this.flatpickr.toggle();
   }
 
-  onClean() {
-    console.log('object');
-    this.flatpickr.clean();
+  onClear() {
+    this.flatpickr.clear();
   }
 
-  getProps() {
-    const { render: Render, value, onChangeDatetime, ...props } = this.props;
-    return props;
+  setDatetime(value, triggerChange = true) {
+    this.flatpickr.setDate(value, triggerChange, this.type.dateFormat);
   }
 
   render() {
-    const Render = this.props.render;
-    if (Render) {
-      return (
-        <Render
-          {...this.getProps()}
-          ref={(node) => { this.datetimeRef = node; }}
-          onOpen={this.onOpen}
-        />
-      );
-    }
     return (
-      <span ref={(node) => { this.datetimeRef = node; }}>
-        {this.props.children}
-      </span>
+      this.props.children ?
+        React.createElement(
+          'div',
+          {
+            ref: (node) => { this.datetimeRef = node; },
+          },
+          this.props.children,
+        ) :
+        <div className="input-group">
+          <span ref={(node) => { this.datetimeRef = node; }} />
+          <input
+            type="text"
+            readOnly={this.props.readOnly}
+            className="form-control"
+            value={this.state.value}
+            onChange={this.props.allowInput ? this.onChange : null}
+            onKeyPress={this.onKeyPress}
+            onClick={this.props.clickOpens && !this.props.allowInput ? this.onOpen : null}
+          />
+          <span className="input-group-btn">
+            {
+              this.state.valueChange ?
+                <button className="btn btn-secondary" type="button" onClick={this.onChangeSuccess}>
+                  <i className="fa fa-check" aria-hidden="true" />
+                </button> : null
+            }
+            <button className="btn btn-secondary" type="button" onClick={this.onClear}>
+              <i className="fa fa-close" aria-hidden="true" />
+            </button>
+            <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
+              <i className="fa fa-calendar" aria-hidden="true" />
+            </button>
+          </span>
+        </div>
     );
   }
 }

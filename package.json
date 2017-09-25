@@ -96,6 +96,7 @@
   "dependencies": {
     "flatpickr": "^3.0.7",
     "flow-bin": "0.54.1",
+    "moment": "^2.18.1",
     "prop-types": "^15.5.10"
   },
   "peerDependencies": {
