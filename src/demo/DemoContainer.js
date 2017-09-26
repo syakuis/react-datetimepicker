@@ -12,7 +12,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 
-import DatetimePicker from 'react-datetimepicker-syaku';
+import DatetimePicker from '../DatetimePicker';
 
 DatetimePicker.setLocale(locale.ko, 'ko');
 

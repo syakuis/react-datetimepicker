@@ -2,6 +2,8 @@
 
 날짜와 시간을 선택할 수 있는 라이브러리 flatpickr 를 이용하여 React 에서 사용할 수 있게 수정하였습니다.
 
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/xGZD4L0ne_E/0.jpg)](https://youtu.be/xGZD4L0ne_E)
+
 ## install
 
 ```
