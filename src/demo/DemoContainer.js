@@ -9,10 +9,9 @@ import React from 'react';
 import locale from 'flatpickr/dist/l10n/ko';
 import 'flatpickr/dist/flatpickr.min.css';
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'font-awesome/css/font-awesome.css';
-
 import DatetimePicker from '../DatetimePicker';
+import InputGroup from './InputGroup';
+import Button from './Button';
 
 DatetimePicker.setLocale(locale.ko, 'ko');
 
@@ -20,14 +19,7 @@ class DemoContainer extends React.Component {
   constructor(props) {
     super(props);
 
-
     this.onDatetime = this.onDatetime.bind(this);
-    this.onOpen = this.onOpen.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.onChangeSuccess = this.onChangeSuccess.bind(this);
-    this.onClear = this.onClear.bind(this);
-
-    this.datetimeRef = undefined;
 
     this.state = {
       value: {
@@ -42,11 +34,6 @@ class DemoContainer extends React.Component {
         datetime: [],
         value: '',
       },
-      custom: {
-        datetime: [],
-        value: '',
-        valueChange: false,
-      },
       range: {
         datetime: [],
         value: '',
@@ -60,27 +47,6 @@ class DemoContainer extends React.Component {
 
   onDatetime(datetime, value, name) {
     this.setState({ [name]: { datetime, value } });
-  }
-
-  onOpen() {
-    this.datetimeRef.onOpen();
-  }
-
-  onChange(e) {
-    this.setState({
-      custom: {
-        value: e.target.value,
-        valueChange: true,
-      },
-    });
-  }
-
-  onChangeSuccess() {
-    this.datetimeRef.setDatetime(this.state.custom.value);
-  }
-
-  onClear() {
-    this.datetimeRef.onClear();
   }
 
   render() {
@@ -141,6 +107,7 @@ class DemoContainer extends React.Component {
               onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value2')}
               type="datetime"
               defaultDate="2011-11-30 20:10"
+              className="input-group-sm"
             />
             <pre>
               {`
@@ -148,6 +115,7 @@ class DemoContainer extends React.Component {
                   onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value2')}
                   type="datetime"
                   defaultDate="2011-11-30 20:10"
+                  className="input-group-sm"
                 />
               `}
             </pre>
@@ -225,63 +193,11 @@ class DemoContainer extends React.Component {
 
           <p />
 
-          <p className="h3" id="custom">Custom UI</p>
-          <div>
-            <p>{this.state.custom.value}</p>
-            <DatetimePicker
-              ref={(node) => { this.datetimeRef = node; }}
-              onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'custom')}
-            >
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={this.state.custom.value}
-                  onChange={this.onChange}
-                />
-                <span className="input-group-btn">
-                  {
-                    this.state.custom.valueChange ?
-                      <button className="btn btn-secondary" type="button" onClick={this.onChangeSuccess}>
-                        <i className="fa fa-check" aria-hidden="true" />
-                      </button> : null
-                  }
-                  <button className="btn btn-secondary" type="button" onClick={this.onClear}>
-                    삭제
-                  </button>
-                  <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
-                    선택
-                  </button>
-                </span>
-              </div>
-            </DatetimePicker>
-            <pre>
-              {`
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={this.state.custom.value}
-                    onChange={this.onChange}
-                  />
-                  <span className="input-group-btn">
-                    {
-                      this.state.custom.valueChange ?
-                        <button className="btn btn-secondary" type="button" onClick={this.onChangeSuccess}>
-                          <i className="fa fa-check" aria-hidden="true" />
-                        </button> : null
-                    }
-                    <button className="btn btn-secondary" type="button" onClick={this.onClear}>
-                      삭제
-                    </button>
-                    <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
-                      선택
-                    </button>
-                  </span>
-                </div>
-              `}
-            </pre>
-          </div>
+          <p className="h3" id="custom">Custom UI : Input Group</p>
+          <InputGroup />
+
+          <p className="h3" id="button">Custom UI : Button</p>
+          <Button />
         </div>
       </div>
     );

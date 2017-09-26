@@ -19,6 +19,9 @@ const propTypes = {
   wrapper: PropTypes.string,
   className: PropTypes.string,
 
+  afterOpen: PropTypes.func,
+  afterClear: PropTypes.func,
+
   // flatpickr config
   dateFormat: PropTypes.string,
   defaultDate: PropTypes.oneOfType([
@@ -37,6 +40,8 @@ const defaultProps = {
   stringFormat: 'YYYYMMDD',
   wrapper: 'div',
   className: undefined,
+  afterOpen: undefined,
+  afterClear: undefined,
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -130,7 +135,16 @@ class DatetimePicker extends Component {
 
   componentDidMount() {
     const {
-      children, onDatetime, readOnly, type, stringFormat, wrapper, className, ...props
+      children,
+      onDatetime,
+      readOnly,
+      type,
+      stringFormat,
+      wrapper,
+      className,
+      afterOpen,
+      afterClear,
+      ...props
     } = this.props;
 
     this.flatpickr = new Flatpickr(this.datetimeRef, {
@@ -186,10 +200,12 @@ class DatetimePicker extends Component {
 
   onOpen() {
     this.flatpickr.toggle();
+    if (typeof this.props.afterOpen === 'function') this.props.afterOpen();
   }
 
   onClear() {
     this.flatpickr.clear();
+    if (typeof this.props.afterClear === 'function') this.props.afterClear();
   }
 
   setDatetime(value, triggerChange = true) {
@@ -223,14 +239,14 @@ class DatetimePicker extends Component {
           <span className="input-group-btn">
             {
               this.state.valueChange ?
-                <button className="btn btn-secondary" type="button" onClick={this.onChangeSuccess}>
+                <button className="btn btn-success" type="button" onClick={this.onChangeSuccess}>
                   <i className="fa fa-check" aria-hidden="true" />
                 </button> : null
             }
-            <button className="btn btn-secondary" type="button" onClick={this.onClear}>
+            <button className="btn btn-danger" type="button" onClick={this.onClear}>
               <i className="fa fa-close" aria-hidden="true" />
             </button>
-            <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
+            <button className="btn btn-default" type="button" onClick={this.onOpen}>
               <i className="fa fa-calendar" aria-hidden="true" />
             </button>
           </span>

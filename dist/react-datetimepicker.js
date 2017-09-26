@@ -69,7 +69,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "d1a0cd2e4ce6165f5b11"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "0879c87eb597b00e4f50"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -774,6 +774,9 @@ var propTypes = {
   wrapper: _propTypes2.default.string,
   className: _propTypes2.default.string,
 
+  afterOpen: _propTypes2.default.func,
+  afterClear: _propTypes2.default.func,
+
   // flatpickr config
   dateFormat: _propTypes2.default.string,
   defaultDate: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.array]),
@@ -789,6 +792,8 @@ var defaultProps = {
   stringFormat: 'YYYYMMDD',
   wrapper: 'div',
   className: undefined,
+  afterOpen: undefined,
+  afterClear: undefined,
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -905,7 +910,9 @@ var DatetimePicker = function (_Component) {
           stringFormat = _props.stringFormat,
           wrapper = _props.wrapper,
           className = _props.className,
-          props = _objectWithoutProperties(_props, ['children', 'onDatetime', 'readOnly', 'type', 'stringFormat', 'wrapper', 'className']);
+          afterOpen = _props.afterOpen,
+          afterClear = _props.afterClear,
+          props = _objectWithoutProperties(_props, ['children', 'onDatetime', 'readOnly', 'type', 'stringFormat', 'wrapper', 'className', 'afterOpen', 'afterClear']);
 
       this.flatpickr = new _flatpickr2.default(this.datetimeRef, _extends({}, props, this.type, {
         wrap: false,
@@ -964,11 +971,13 @@ var DatetimePicker = function (_Component) {
     key: 'onOpen',
     value: function onOpen() {
       this.flatpickr.toggle();
+      if (typeof this.props.afterOpen === 'function') this.props.afterOpen();
     }
   }, {
     key: 'onClear',
     value: function onClear() {
       this.flatpickr.clear();
+      if (typeof this.props.afterClear === 'function') this.props.afterClear();
     }
   }, {
     key: 'setDatetime',
@@ -1009,17 +1018,17 @@ var DatetimePicker = function (_Component) {
           { className: 'input-group-btn' },
           this.state.valueChange ? _react2.default.createElement(
             'button',
-            { className: 'btn btn-secondary', type: 'button', onClick: this.onChangeSuccess },
+            { className: 'btn btn-success', type: 'button', onClick: this.onChangeSuccess },
             _react2.default.createElement('i', { className: 'fa fa-check', 'aria-hidden': 'true' })
           ) : null,
           _react2.default.createElement(
             'button',
-            { className: 'btn btn-secondary', type: 'button', onClick: this.onClear },
+            { className: 'btn btn-danger', type: 'button', onClick: this.onClear },
             _react2.default.createElement('i', { className: 'fa fa-close', 'aria-hidden': 'true' })
           ),
           _react2.default.createElement(
             'button',
-            { className: 'btn btn-secondary', type: 'button', onClick: this.onOpen },
+            { className: 'btn btn-default', type: 'button', onClick: this.onOpen },
             _react2.default.createElement('i', { className: 'fa fa-calendar', 'aria-hidden': 'true' })
           )
         )
