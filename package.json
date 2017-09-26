@@ -1,13 +1,26 @@
 {
   "name": "react-datetimepicker-syaku",
-  "version": "0.0.1",
-  "description": "react 용 날짜와 시간 선택기. flatpickrc 을 이용하여 개발하였다",
+  "version": "1.0.0",
+  "description": "react 용 날짜와 시간 선택기. flatpickr 을 이용하여 개발하였다",
   "author": "Syaku (최석균) <http://syaku.tistory.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/syakuis/react-datetimepicker"
   },
+  "keywords": [
+    "javascript",
+    "es",
+    "react",
+    "datetimepicker",
+    "calendar",
+    "date",
+    "time",
+    "picker",
+    "lightweight",
+    "flatpickr"
+  ],
+  "main": "dist/react-datetimepicker.js",
   "jest": {
     "verbose": true,
     "testMatch": [
@@ -21,7 +34,7 @@
     }
   },
   "config": {
-    "filename": "react-datetimepicker-syaku",
+    "filename": "react-datetimepicker",
     "publicPath": "/",
     "dist": "dist",
     "src": "src",
@@ -39,6 +52,18 @@
         "commonjs2": "react-dom",
         "commonjs": "react-dom",
         "amd": "react-dom"
+      },
+      "moment": {
+        "root": "moment",
+        "commonjs2": "moment",
+        "commonjs": "moment",
+        "amd": "moment"
+      },
+      "flatpickr": {
+        "root": "flatpickr",
+        "commonjs2": "flatpickr",
+        "commonjs": "flatpickr",
+        "amd": "flatpickr"
       }
     }
   },
@@ -77,12 +102,14 @@
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^2.0.0",
     "file-loader": "^0.11.2",
+    "flatpickr": "^3.0.7",
     "font-awesome": "^4.7.0",
     "html-webpack-plugin": "^2.28.0",
     "jest": "^21.1.0",
-    "react": "15.6.1",
+    "moment": "^2.18.1",
+    "react": "^15.6.1",
     "react-addons-perf": "^15.4.2",
-    "react-dom": "15.6.1",
+    "react-dom": "^15.6.1",
     "style-loader": "^0.18.2",
     "stylelint": "7.12.0",
     "stylelint-config-standard": "^16.0.0",
@@ -94,13 +121,12 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "flatpickr": "^3.0.7",
-    "flow-bin": "0.54.1",
-    "moment": "^2.18.1",
     "prop-types": "^15.5.10"
   },
   "peerDependencies": {
-    "react": ">=15.6.1",
-    "react-dom": ">=15.6.1"
+    "flatpickr": "^3.0.7",
+    "moment": "^2.18.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   }
 }

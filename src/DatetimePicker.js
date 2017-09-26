@@ -1,10 +1,5 @@
 /**
  * flatpickr 를 이용한 날짜와 시간 선택기
- *
- * flatpickr 기능중 지원하지 않는 것들.
- * inline, wrap
- * 위 기능은 내부적으로 사용되므로 제어할 수 없다.
- *
  * @author: Seok Kyun. Choi. 최석균 (Syaku)
  * @site: http://syaku.tistory.com
  * @since: 2017. 9. 22.
@@ -14,8 +9,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Flatpickr from 'flatpickr';
-import locale from 'flatpickr/dist/l10n/ko';
-import 'flatpickr/dist/flatpickr.min.css';
 
 const propTypes = {
   children: PropTypes.node,
@@ -23,6 +16,8 @@ const propTypes = {
   readOnly: PropTypes.bool,
   type: PropTypes.string,
   stringFormat: PropTypes.string,
+  wrapper: PropTypes.string,
+  className: PropTypes.string,
 
   // flatpickr config
   dateFormat: PropTypes.string,
@@ -40,6 +35,8 @@ const defaultProps = {
   readOnly: false,
   type: 'date', // date, datetime, time
   stringFormat: 'YYYYMMDD',
+  wrapper: 'div',
+  className: undefined,
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -65,7 +62,7 @@ const defaultProps = {
   hourIncrement: 1, // 시간 입력 단계를 조정합니다 (스크롤 포함).
   minuteIncrement: 5, // 분 입력 단계를 조정합니다 (스크롤 포함).
 
-  locale: locale.ko,
+  locale: undefined,
   allowInput: false, // data-input 입력은 읽기전용이다.
   clickOpens: true, // data-input 클릭하면 달력이 활성화 된다.
   // 아래의 설정을 사용하면 선택기가 멈춘다.
@@ -80,6 +77,10 @@ const defaultProps = {
 };
 
 class DatetimePicker extends Component {
+  static setLocale(Locale, locale) {
+    Flatpickr.localize(Locale);
+    if (locale) moment.locale(locale);
+  }
   constructor(props) {
     super(props);
 
@@ -128,7 +129,9 @@ class DatetimePicker extends Component {
   }
 
   componentDidMount() {
-    const { children, onDatetime, type, stringFormat, ...props } = this.props;
+    const {
+      children, onDatetime, readOnly, type, stringFormat, wrapper, className, ...props
+    } = this.props;
 
     this.flatpickr = new Flatpickr(this.datetimeRef, {
       ...props,
@@ -197,14 +200,17 @@ class DatetimePicker extends Component {
     return (
       this.props.children ?
         React.createElement(
-          'div',
+          this.props.wrapper,
           {
+            className: this.props.className,
             ref: (node) => { this.datetimeRef = node; },
           },
           this.props.children,
         ) :
-        <div className="input-group">
-          <span ref={(node) => { this.datetimeRef = node; }} />
+        <div
+          className={`input-group ${this.props.className ? this.props.className : ''}`}
+          ref={(node) => { this.datetimeRef = node; }}
+        >
           <input
             type="text"
             readOnly={this.props.readOnly}

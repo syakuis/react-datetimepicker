@@ -19,8 +19,8 @@ module.exports = {
     path: path.join(__dirname, dist),
     publicPath,
     filename: `${filename}.js`,
-    // libraryTarget: 'umd',
-    // library: 'Modal',
+    libraryTarget: 'umd',
+    library: 'ReactDatetimePicker',
   },
 
   plugins: [
@@ -128,6 +128,8 @@ module.exports = {
   devServer: {
     port,
     contentBase: dist,
+    disableHostCheck: true,
+    host: '0.0.0.0',
   },
 };
 

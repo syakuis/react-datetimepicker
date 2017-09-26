@@ -1,5 +1,20 @@
+/**
+ * @author: Seok Kyun. Choi. 최석균 (Syaku)
+ * @site: http://syaku.tistory.com
+ * @since: 2017. 9. 26.
+ */
+
 import React from 'react';
-import DatetimePicker from '../DatetimePicker';
+
+import locale from 'flatpickr/dist/l10n/ko';
+import 'flatpickr/dist/flatpickr.min.css';
+
+import 'bootstrap/dist/css/bootstrap.css';
+import 'font-awesome/css/font-awesome.css';
+
+import DatetimePicker from 'react-datetimepicker-syaku';
+
+DatetimePicker.setLocale(locale.ko, 'ko');
 
 class DemoContainer extends React.Component {
   constructor(props) {
@@ -96,151 +111,127 @@ class DemoContainer extends React.Component {
         </nav>
 
         <p />
+        <div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
 
-        <p className="h3" id="date">Date</p>
-        <div>
-          <p>{this.state.value.value}</p>
-          <DatetimePicker
-            onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value')}
-            defaultDate="20111220"
-            allowInput
-          />
-          <pre>
-            {`
-              <DatetimePicker
-                onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value')}
-                defaultDate="20111220"
-                allowInput
-              />
-            `}
-          </pre>
-        </div>
+          <p className="h3" id="date">Date</p>
+          <div>
+            <p>{this.state.value.value}</p>
+            <DatetimePicker
+              onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value')}
+              defaultDate="20111220"
+              allowInput
+            />
+            <pre>
+              {`
+                <DatetimePicker
+                  onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value')}
+                  defaultDate="20111220"
+                  allowInput
+                />
+              `}
+            </pre>
+          </div>
 
-        <p />
+          <p />
 
-        <p className="h3" id="datetime">Datetime</p>
-        <div>
-          <p>{this.state.value2.value}</p>
-          <DatetimePicker
-            onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value2')}
-            type="datetime"
-            defaultDate="2011-11-30 20:10"
-          />
-          <pre>
-            {`
-              <DatetimePicker
-                onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value2')}
-                type="datetime"
-                defaultDate="2011-11-30 20:10"
-              />
-            `}
-          </pre>
-        </div>
+          <p className="h3" id="datetime">Datetime</p>
+          <div>
+            <p>{this.state.value2.value}</p>
+            <DatetimePicker
+              onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value2')}
+              type="datetime"
+              defaultDate="2011-11-30 20:10"
+            />
+            <pre>
+              {`
+                <DatetimePicker
+                  onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value2')}
+                  type="datetime"
+                  defaultDate="2011-11-30 20:10"
+                />
+              `}
+            </pre>
+          </div>
 
-        <p />
+          <p />
 
-        <p className="h3" id="time">time</p>
-        <div>
-          <p>{this.state.value3.value}</p>
-          <DatetimePicker
-            onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value3')}
-            type="time"
-            readOnly
-            clickOpens={false}
-          />
-          <pre>
-            {`
-              <DatetimePicker
-                onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value3')}
-                type="time"
-                readOnly
-                clickOpens={false}
-              />
-            `}
-          </pre>
-        </div>
+          <p className="h3" id="time">time</p>
+          <div>
+            <p>{this.state.value3.value}</p>
+            <DatetimePicker
+              onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value3')}
+              type="time"
+              readOnly
+              clickOpens={false}
+            />
+            <pre>
+              {`
+                <DatetimePicker
+                  onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value3')}
+                  type="time"
+                  readOnly
+                  clickOpens={false}
+                />
+              `}
+            </pre>
+          </div>
 
-        <p />
+          <p />
 
-        <p className="h3" id="multiple">Datetime Multiple</p>
-        <div>
-          <p>{this.state.multiple.value}</p>
-          <DatetimePicker
-            onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'multiple')}
-            mode="multiple"
-            defaultDate="2011-11-30"
-          />
-          <pre>
-            {`
-              <DatetimePicker
-                onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'multiple')}
-                mode="multiple"
-                defaultDate="2011-11-30"
-              />
-            `}
-          </pre>
-        </div>
+          <p className="h3" id="multiple">Datetime Multiple</p>
+          <div>
+            <p>{this.state.multiple.value}</p>
+            <DatetimePicker
+              onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'multiple')}
+              mode="multiple"
+              defaultDate="2011-11-30"
+            />
+            <pre>
+              {`
+                <DatetimePicker
+                  onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'multiple')}
+                  mode="multiple"
+                  defaultDate="2011-11-30"
+                />
+              `}
+            </pre>
+          </div>
 
-        <p />
+          <p />
 
-        <p className="h3" id="range">Datetime Range</p>
-        <div>
-          <p>{this.state.range.value}</p>
-          {
-            this.state.range.datetime.map(item => <p key={item.toString()}>{item.toString()}</p>)
-          }
-          <DatetimePicker
-            mode="range"
-            onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'range')}
-            type="datetime"
-            defaultDate={['2011-11-30 10:20', '201112301020']}
-          />
-          <pre>
-            {`
-              <DatetimePicker
-                mode="range"
-                onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'range')}
-                type="datetime"
-                defaultDate={['2011-11-30 10:20', '201112301020']}
-              />
-            `}
-          </pre>
-        </div>
+          <p className="h3" id="range">Datetime Range</p>
+          <div>
+            <p>{this.state.range.value}</p>
+            {
+              this.state.range.datetime.map(item => <p key={item.toString()}>{item.toString()}</p>)
+            }
+            <DatetimePicker
+              mode="range"
+              onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'range')}
+              type="datetime"
+              defaultDate={['2011-11-30 10:20', '201112301020']}
+            />
+            <pre>
+              {`
+                <DatetimePicker
+                  mode="range"
+                  onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'range')}
+                  type="datetime"
+                  defaultDate={['2011-11-30 10:20', '201112301020']}
+                />
+              `}
+            </pre>
+          </div>
 
-        <p />
+          <p />
 
-        <p className="h3" id="custom">Custom UI</p>
-        <div>
-          <p>{this.state.custom.value}</p>
-          <DatetimePicker
-            ref={(node) => { this.datetimeRef = node; }}
-            onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'custom')}
-          >
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                value={this.state.custom.value}
-                onChange={this.onChange}
-              />
-              <span className="input-group-btn">
-                {
-                  this.state.custom.valueChange ?
-                    <button className="btn btn-secondary" type="button" onClick={this.onChangeSuccess}>
-                      <i className="fa fa-check" aria-hidden="true" />
-                    </button> : null
-                }
-                <button className="btn btn-secondary" type="button" onClick={this.onClear}>
-                  삭제
-                </button>
-                <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
-                  선택
-                </button>
-              </span>
-            </div>
-          </DatetimePicker>
-          <pre>
-            {`
+          <p className="h3" id="custom">Custom UI</p>
+          <div>
+            <p>{this.state.custom.value}</p>
+            <DatetimePicker
+              ref={(node) => { this.datetimeRef = node; }}
+              onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'custom')}
+            >
               <div className="input-group">
                 <input
                   type="text"
@@ -263,8 +254,34 @@ class DemoContainer extends React.Component {
                   </button>
                 </span>
               </div>
-            `}
-          </pre>
+            </DatetimePicker>
+            <pre>
+              {`
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={this.state.custom.value}
+                    onChange={this.onChange}
+                  />
+                  <span className="input-group-btn">
+                    {
+                      this.state.custom.valueChange ?
+                        <button className="btn btn-secondary" type="button" onClick={this.onChangeSuccess}>
+                          <i className="fa fa-check" aria-hidden="true" />
+                        </button> : null
+                    }
+                    <button className="btn btn-secondary" type="button" onClick={this.onClear}>
+                      삭제
+                    </button>
+                    <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
+                      선택
+                    </button>
+                  </span>
+                </div>
+              `}
+            </pre>
+          </div>
         </div>
       </div>
     );
