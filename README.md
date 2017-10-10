@@ -7,6 +7,12 @@
 ## install
 
 ```
+// required
+$ npm install flatpickr moment
+
+// optional
+$ npm install bootstrap font-awesome
+
 $ npm install react-datetimepicker-syaku
 
 or
@@ -24,13 +30,13 @@ import DatetimePicker from 'react-datetimepicker-syaku';
 // flatpickr theme setting (Optional)
 import 'flatpickr/dist/flatpickr.min.css';
 
-// bootstrap & fontawesome (Optional)
-import 'bootstrap/dist/css/bootstrap.css';
-import 'font-awesome/css/font-awesome.css';
-
 // locale setting (Optional)
 import locale from 'flatpickr/dist/l10n/ko';
 DatetimePicker.setLocale(locale.ko, 'ko');
+
+// bootstrap & fontawesome (Optional)
+import 'bootstrap/dist/css/bootstrap.css';
+import 'font-awesome/css/font-awesome.css';
 
 onDatetime(datetime, value, stateName) {
   console.log(datetime, value, stateName);

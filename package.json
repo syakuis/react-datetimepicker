@@ -1,6 +1,6 @@
 {
   "name": "react-datetimepicker-syaku",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "react 용 날짜와 시간 선택기. flatpickr 을 이용하여 개발하였다",
   "author": "Syaku (최석균) <http://syaku.tistory.com>",
   "license": "MIT",
@@ -9,8 +9,7 @@
     "url": "https://github.com/syakuis/react-datetimepicker"
   },
   "keywords": [
-    "javascript",
-    "es",
+    "syaku",
     "react",
     "datetimepicker",
     "calendar",
@@ -124,9 +123,9 @@
     "prop-types": "^15.5.10"
   },
   "peerDependencies": {
-    "flatpickr": "^3.0.7",
-    "moment": "^2.18.1",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "flatpickr": ">=3.0.7",
+    "moment": ">=2.18.1",
+    "react": ">=15.6.1",
+    "react-dom": ">=15.6.1"
   }
 }
