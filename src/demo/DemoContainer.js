@@ -53,7 +53,7 @@ class DemoContainer extends React.Component {
     return (
       <div className="container">
         <nav id="navbar-demo" className="navbar navbar-light bg-light">
-          <a className="navbar-brand" href>React-DatetimePicker</a>
+          <a className="navbar-brand" href="">React-DatetimePicker</a>
           <ul className="nav nav-pills">
             <li className="nav-item">
               <a className="nav-link" href="#date">date</a>

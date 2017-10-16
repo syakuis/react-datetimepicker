@@ -67,7 +67,6 @@ const defaultProps = {
   hourIncrement: 1, // 시간 입력 단계를 조정합니다 (스크롤 포함).
   minuteIncrement: 5, // 분 입력 단계를 조정합니다 (스크롤 포함).
 
-  locale: undefined,
   allowInput: false, // data-input 입력은 읽기전용이다.
   clickOpens: true, // data-input 클릭하면 달력이 활성화 된다.
   // 아래의 설정을 사용하면 선택기가 멈춘다.
