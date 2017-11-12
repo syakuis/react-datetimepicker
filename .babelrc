@@ -1,8 +1,13 @@
-
 {
-  "presets": ["es2015", "react", "stage-3"],
+  "presets": [
+    [
+      "env", {
+        "targets": { "browsers": [ "last 2 Chrome versions", "ie >= 11" ] },
+        "debug": true
+      }
+    ], "react", "stage-3"
+  ],
   "plugins": [
-    "lodash",
     "dynamic-import-webpack",
     "transform-object-assign"
   ]

@@ -97,14 +97,11 @@ module.exports = {
       {
         test: /\.js$/,
         include: path.resolve(__dirname, src),
-        loader: 'babel-loader',
-        query: {
-          presets: ['react', 'es2015', 'stage-3'],
-          plugins: [
-            'lodash',
-            'dynamic-import-webpack',
-            'transform-object-assign',
-          ],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          }
         },
       },
     ],
