@@ -10,7 +10,5 @@ const merge = require('webpack-merge');
 const base = require('./webpack.base.config');
 
 module.exports = merge(base({ entry: './src/demo/index.js', dist: 'demo' }), {
-  plugins: [
-    new CleanWebpackPlugin(['demo']),
-  ],
+  plugins: process.env.NODE_ENV === 'production' ? [new CleanWebpackPlugin(['demo'])] : [],
 });

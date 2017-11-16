@@ -56,7 +56,7 @@ class DemoContainer extends React.Component {
         <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="navbar-header">
-              <a className="navbar-brand" href="/">
+              <a className="navbar-brand" href="./">
                 React Datetime Picker
               </a>
             </div>
