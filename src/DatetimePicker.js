@@ -18,6 +18,7 @@ const propTypes = {
   stringFormat: PropTypes.string,
   wrapper: PropTypes.string,
   className: PropTypes.string,
+  style: PropTypes.shape({}),
 
   afterOpen: PropTypes.func,
   afterClear: PropTypes.func,
@@ -40,6 +41,7 @@ const defaultProps = {
   stringFormat: 'YYYYMMDD',
   wrapper: 'div',
   className: undefined,
+  style: undefined,
   afterOpen: undefined,
   afterClear: undefined,
 
@@ -141,6 +143,7 @@ class DatetimePicker extends Component {
       stringFormat,
       wrapper,
       className,
+      style,
       afterOpen,
       afterClear,
       ...props
@@ -212,12 +215,15 @@ class DatetimePicker extends Component {
   }
 
   render() {
+    const { className, style } = this.props;
+
     return (
       this.props.children ?
         React.createElement(
           this.props.wrapper,
           {
-            className: this.props.className,
+            ...className,
+            ...style,
             ref: (node) => { this.datetimeRef = node; },
           },
           this.props.children,

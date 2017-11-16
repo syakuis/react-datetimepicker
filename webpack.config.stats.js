@@ -6,11 +6,12 @@
 const merge = require('webpack-merge');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const config = require('./webpack.config');
+const base = require('./webpack.base.config');
+
 const pkg = require('./package.json');
 const { port, publicPath, dist, src, entry, filename, externals } = pkg.config;
 
-module.exports = merge(config, {
+module.exports = merge(base(), {
   plugins: [
     new BundleAnalyzerPlugin(),
   ],

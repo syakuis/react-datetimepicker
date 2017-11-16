@@ -4,19 +4,18 @@
  * @site http://syaku.tistory.com
  */
 const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const merge = require('webpack-merge');
 
 const base = require('./webpack.base.config');
+
 const pkg = require('./package.json');
 const { port, publicPath, dist, src, entry, filename, externals } = pkg.config;
 
-module.exports = merge(base, {
+module.exports = merge(base(), {
+  externals, 
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
-      },
-    }),
+    new CleanWebpackPlugin([dist]),
   ],
 });

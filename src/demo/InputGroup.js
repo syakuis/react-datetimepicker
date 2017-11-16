@@ -39,6 +39,9 @@ class InputGroup extends Component {
 
   onChangeSuccess() {
     this.datetimeRef.setDatetime(this.state.value);
+    this.setState({
+      valueChange: false,
+    });
   }
 
   onClear() {
@@ -57,25 +60,24 @@ class InputGroup extends Component {
         ref={(node) => { this.datetimeRef = node; }}
         onDatetime={(datetime, value) => this.onDatetime(datetime, value)}
       >
-        <div className="input-group">
+        <div>
           <input
             type="text"
-            className="form-control"
             value={this.state.value}
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
           />
-          <span className="input-group-btn">
+          <span>
             {
               this.state.valueChange ?
-                <button className="btn btn-secondary" type="button" onClick={this.onChangeSuccess}>
+                <button type="button" onClick={this.onChangeSuccess}>
                   <i className="fa fa-check" aria-hidden="true" />
                 </button> : null
             }
-            <button className="btn btn-secondary" type="button" onClick={this.onClear}>
+            <button type="button" onClick={this.onClear}>
               삭제
             </button>
-            <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
+            <button type="button" onClick={this.onOpen}>
               선택
             </button>
           </span>

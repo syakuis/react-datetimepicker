@@ -4,13 +4,7 @@
  * @site http://syaku.tistory.com
  */
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const merge = require('webpack-merge');
-
 const base = require('./webpack.base.config');
 
-module.exports = merge(base({ entry: './src/demo/index.js', dist: 'demo' }), {
-  plugins: [
-    new CleanWebpackPlugin(['demo']),
-  ],
-});
+module.exports = base({ entry: './src/demo/index.js' });

@@ -2,7 +2,11 @@
 
 날짜와 시간을 선택할 수 있는 라이브러리 flatpickr 를 이용하여 React 에서 사용할 수 있게 수정하였습니다.
 
+UI 프레임워크는 Bootstrap 을 사용했고 직접 원하는 코딩을 할 수 있습니다.
+
 크롬, 파이어폭스, 사파리 그리고 IE 11 이상에서 테스트되었습니다.
+
+DEMO : http://syakuis.github.io/demo/react-datetimepicker
 
 [![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/xGZD4L0ne_E/0.jpg)](https://youtu.be/xGZD4L0ne_E)
 
