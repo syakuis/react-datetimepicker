@@ -12,7 +12,6 @@ import Flatpickr from 'flatpickr';
 
 const propTypes = {
   children: PropTypes.node,
-  onDatetime: PropTypes.func,
   readOnly: PropTypes.bool,
   type: PropTypes.string,
   stringFormat: PropTypes.string,
@@ -28,6 +27,7 @@ const propTypes = {
   afterClear: PropTypes.func,
 
   // flatpickr config
+  onChange: PropTypes.func,
   dateFormat: PropTypes.string,
   defaultDate: PropTypes.oneOfType([
     PropTypes.string,
@@ -91,42 +91,58 @@ const defaultProps = {
   onClose: null,
 };
 
+const flatpickr = (target, config, type, onChange) => (
+  new Flatpickr(target, {
+    ...config,
+    ...type,
+    wrap: false,
+    inline: false,
+    clickOpens: false,
+    allowInput: false,
+    parseDate: (date) => {
+      const d = moment(date, type.stringFormat);
+      return d.isValid() ? d.toDate() : null;
+    },
+    onChange,
+  })
+);
+
+const uiType = (props) => {
+  switch (props.type) {
+    case 'datetime':
+      return {
+        noCalendar: false,
+        enableTime: true,
+        dateFormat: 'Y-m-d H:i',
+        stringFormat: 'YYYYMMDDHHmm',
+      };
+    case 'time':
+      return {
+        noCalendar: true,
+        enableTime: true,
+        enableSeconds: true,
+        dateFormat: 'H:i:S',
+        stringFormat: 'HHmmss',
+      };
+    default: {
+      const { dateFormat, stringFormat } = props;
+      return { dateFormat, stringFormat };
+    }
+  }
+};
+
 class DatetimePicker extends Component {
   static setLocale(Locale, locale) {
     Flatpickr.localize(Locale);
     if (locale) moment.locale(locale);
   }
+
   constructor(props) {
     super(props);
 
     this.flatpickr = undefined;
     this.datetimeRef = undefined;
-    this.type = {};
-
-    switch (props.type) {
-      case 'datetime':
-        this.type = {
-          noCalendar: false,
-          enableTime: true,
-          dateFormat: 'Y-m-d H:i',
-          stringFormat: 'YYYYMMDDHHmm',
-        };
-        break;
-      case 'time':
-        this.type = {
-          noCalendar: true,
-          enableTime: true,
-          enableSeconds: true,
-          dateFormat: 'H:i:S',
-          stringFormat: 'HHmmss',
-        };
-        break;
-      default: {
-        const { dateFormat, stringFormat } = props;
-        this.type = { dateFormat, stringFormat };
-        break;
-      }
-    }
+    this.type = uiType(props);
 
     this.onChange = this.onChange.bind(this);
     this.onChangeSuccess = this.onChangeSuccess.bind(this);
@@ -137,8 +153,8 @@ class DatetimePicker extends Component {
     this.onChangeCallback = this.onChangeCallback.bind(this);
 
     this.state = {
-      datetime: [],
-      value: '',
+      selectedDates: [],
+      dateStr: '',
       valueChange: false,
     };
   }
@@ -146,52 +162,22 @@ class DatetimePicker extends Component {
   componentDidMount() {
     const {
       children,
-      onDatetime,
       readOnly,
       type,
       stringFormat,
       wrapper,
       className,
       style,
+      iconSuccess,
+      iconClear,
+      iconOpen,
       afterOpen,
       afterClear,
       ...props
     } = this.props;
 
-    this.flatpickr = new Flatpickr(this.datetimeRef, {
-      ...props,
-      ...this.type,
-      wrap: false,
-      inline: false,
-      clickOpens: false,
-      allowInput: false,
-      parseDate: (date) => {
-        const d = moment(date, this.type.stringFormat);
-        return d.isValid() ? d.toDate() : null;
-      },
-      onChange: this.onChangeCallback,
-    });
-
-    if (this.props.defaultDate) this.flatpickr.setDate(this.props.defaultDate, true);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const prev = this.props.defaultDate;
-    const next = nextProps.defaultDate;
-    if (next && prev !== next) {
-      let isValid = true;
-      if (Array.isArray(next)) {
-        next.forEach((date) => {
-          if (!moment(date).isValid()) isValid = false;
-        });
-      } else {
-        isValid = moment(next).isValid();
-      }
-
-      if (isValid) {
-        this.setDatetime(next);
-      }
-    }
+    this.flatpickr = flatpickr(this.datetimeRef, props, this.type, this.onChangeCallback);
+    if (this.props.defaultDate) this.setDatetime(this.props.defaultDate);
   }
 
   componentWillUnmount() {
@@ -200,9 +186,11 @@ class DatetimePicker extends Component {
     this.datetimeRef = undefined;
   }
 
-  onChangeCallback(datetime, value) {
-    this.setState({ datetime, value });
-    if (typeof this.props.onDatetime === 'function') this.props.onDatetime(datetime, value);
+  onChangeCallback(selectedDates, dateStr, instance) {
+    this.setState({ selectedDates, dateStr });
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(selectedDates, dateStr, instance);
+    }
 
     // this.flatpickr.setDate('2011-12-20', false);
     // this.flatpickr.toggle();
@@ -210,13 +198,13 @@ class DatetimePicker extends Component {
 
   onChange(e) {
     this.setState({
-      value: e.target.value,
+      dateStr: e.target.value,
       valueChange: true,
     });
   }
 
   onChangeSuccess() {
-    this.setDatetime(this.state.value);
+    this.setDatetime(this.state.dateStr);
     this.setState({
       valueChange: false,
     });
@@ -230,12 +218,16 @@ class DatetimePicker extends Component {
 
   onOpen() {
     this.flatpickr.toggle();
-    if (typeof this.props.afterOpen === 'function') this.props.afterOpen();
+    if (typeof this.props.afterOpen === 'function') {
+      this.props.afterOpen(this.state.selectedDates, this.state.dateStr, this.flatpickr);
+    }
   }
 
   onClear() {
     this.flatpickr.clear();
-    if (typeof this.props.afterClear === 'function') this.props.afterClear();
+    if (typeof this.props.afterClear === 'function') {
+      this.props.afterClear(this.state.selectedDates, this.state.dateStr, this.flatpickr);
+    }
   }
 
   setDatetime(value, triggerChange = true) {
@@ -264,7 +256,7 @@ class DatetimePicker extends Component {
             type="text"
             readOnly={this.props.readOnly}
             className="form-control"
-            value={this.state.value}
+            value={this.state.dateStr}
             onChange={this.props.allowInput ? this.onChange : null}
             onKeyPress={this.onKeyPress}
             onClick={this.props.clickOpens && !this.props.allowInput ? this.onOpen : null}

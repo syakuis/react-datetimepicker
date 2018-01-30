@@ -58,7 +58,7 @@ class InputGroup extends Component {
     return (
       <DatetimePicker
         ref={(node) => { this.datetimeRef = node; }}
-        onDatetime={(datetime, value) => this.onDatetime(datetime, value)}
+        onChange={(datetime, value) => this.onDatetime(datetime, value)}
       >
         <div>
           <input

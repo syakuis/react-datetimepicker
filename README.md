@@ -6,11 +6,9 @@ UI 프레임워크는 Bootstrap 을 사용했고 직접 원하는 코딩을 할 
 
 크롬, 파이어폭스, 사파리 그리고 IE 11 이상에서 테스트되었습니다.
 
-DEMO : http://syakuis.github.io/demo/react-datetimepicker
-
 [![Edit React DatetimePicker Demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/v64l7r7mr5)
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/xGZD4L0ne_E/0.jpg)](https://youtu.be/xGZD4L0ne_E)
+LIVE DEMO : http://syakuis.github.io/demo/react-datetimepicker
 
 ## install
 
@@ -26,18 +24,6 @@ $ npm install react-datetimepicker-syaku
 or
 
 $ yarn add react-datetimepicker-syaku
-```
-
-## CDN
-
-```html
-<script src="./dist/react-datetimepicker.min.js"></script>
-```
-
-## es6
-
-```js
-import ReactDatetimePicker from 'react-datetimepicker-syaku';
 ```
 
 ## Setting
@@ -57,29 +43,13 @@ DatetimePicker.setLocale(locale.ko, 'ko');
 // bootstrap & fontawesome (Optional)
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
-
-onDatetime(datetime, value, stateName) {
-  console.log(datetime, value, stateName);
-}
-
-<DatetimePicker
-  onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value')}
-/>
-
-or
-
-<DatetimePicker
-  ref={(node) => { this.datetimeRef = node; }}
-  onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'custom')}
->
-  <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
-    삭제
-  </button>
-</DatetimePicker>
 ```
 
-자세한 정보는 `src/demo/DemoContainer.js` 참고하세요.
+## CDN
 
+```html
+<script src="./dist/react-datetimepicker.min.js"></script>
+```
 
 ### DatetimePicker method
 
@@ -95,7 +65,6 @@ setDatetime(value: String, triggerChange = true) : Flatpickr.setDate()
 
 ```
 children: undefined, // custom ui
-onDatetime: undefined, // callback func
 readOnly: false, // input readOnly
 type: 'date', // input type date, datetime, time
 stringFormat: 'YYYYMMDD', // key input date format
@@ -115,5 +84,4 @@ parseDate: (date) => {
   const d = moment(date, this.type.stringFormat);
   return d.isValid() ? d.toDate() : null;
 },
-onChange: this.onChangeCallback,
 ```

@@ -29,7 +29,7 @@ class Button extends Component {
     return (
       <DatetimePicker
         ref={(node) => { this.datetimeRef = node; }}
-        onDatetime={(datetime, value) => this.onDatetime(datetime, value)}
+        onChange={(datetime, value) => this.onDatetime(datetime, value)}
       >
         <button className="btn btn-success" type="button" onClick={this.onOpen}>
           {this.state.value || '선택'}

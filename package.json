@@ -1,6 +1,6 @@
 {
   "name": "react-datetimepicker-syaku",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "react 용 날짜와 시간 선택기. flatpickr 을 이용하여 개발하였다",
   "author": "Syaku (최석균) <http://syaku.tistory.com>",
   "url": "http://syakuis.github.io/demo/react-datetimepicker",
