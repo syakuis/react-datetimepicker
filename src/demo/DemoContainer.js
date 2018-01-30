@@ -11,8 +11,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 import InputGroup from './InputGroup';
 import Button from './Button';
-
-const DatetimePicker = (process.env.SOURCE_TARGET === 'node') ? require('react-datetimepicker-syaku').default : require('../DatetimePicker').default;
+import DatetimePicker from '../DatetimePicker';
 
 DatetimePicker.setLocale(locale.ko, 'ko');
 
@@ -21,8 +20,10 @@ class DemoContainer extends React.Component {
     super(props);
 
     this.onDatetime = this.onDatetime.bind(this);
+    this.onChangeInput = this.onChangeInput.bind(this);
 
     this.state = {
+      input: '',
       value: {
         datetime: [],
         value: '',
@@ -48,6 +49,10 @@ class DemoContainer extends React.Component {
 
   onDatetime(datetime, value, name) {
     this.setState({ [name]: { datetime, value } });
+  }
+
+  onChangeInput(e) {
+    this.setState({ input: e.target.value });
   }
 
   render() {
@@ -77,13 +82,18 @@ class DemoContainer extends React.Component {
         <div>
           <p />
           <div>
+            <div className="form-inline">
+              <div className="form-group">
+                <input type="text" className="form-control" value={this.state.input} onChange={this.onChangeInput} />
+              </div>
+            </div>
 
             <h3>Date</h3>
             <div>
               <p>{this.state.value.value}</p>
               <DatetimePicker
                 onDatetime={(datetime, value) => this.onDatetime(datetime, value, 'value')}
-                defaultDate="20111220"
+                defaultDate={this.state.input}
                 allowInput
               />
               <p />
@@ -242,7 +252,7 @@ class DemoContainer extends React.Component {
                   ref={(node) => { this.datetimeRef = node; }}
                   onDatetime={(datetime, value) => this.onDatetime(datetime, value)}
                 >
-                  <button className="btn btn-secondary" type="button" onClick={this.onOpen}>
+                  <button className="btn btn-success" type="button" onClick={this.onOpen}>
                     {this.state.value || '선택'}
                   </button>
                 </DatetimePicker>

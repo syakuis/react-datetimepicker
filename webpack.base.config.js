@@ -1,46 +1,26 @@
-/**
- * @date 2017-03-16 09:47:59
- * @author Seok Kyun. Choi. 최석균 (Syaku)
- * @site http://syaku.tistory.com
- */
 
 const path = require('path');
-const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 const pkg = require('./package.json');
 
 const base = (args) => {
   const config = Object.assign(pkg.config, args);
-  const { port, publicPath, dist, src, entry, filename, externals } = config;
+  const {
+    entry, publicPath, output, src, filename,
+  } = config;
 
   return {
     entry,
-
     output: {
-      path: path.join(__dirname, dist),
+      path: path.join(__dirname, output),
       publicPath,
       filename: `${filename}.js`,
-      libraryTarget: 'umd',
-      library: 'ReactDatetimePicker',
     },
 
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env': {
-          'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-          'SOURCE_TARGET': JSON.stringify(process.env.SOURCE_TARGET),
-        },
-      }),
       new ExtractTextPlugin({
         filename: `${filename}.css`,
       }),
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: `${src}/index.html`,
-      }),
-      new webpack.HotModuleReplacementPlugin(),
     ],
     module: {
       rules: [
@@ -52,7 +32,7 @@ const base = (args) => {
         },
         {
           test: /\.css$/,
-          include: path.join(__dirname, 'node_module'),
+          exclude: /\.module\.css$/,
           loader: ExtractTextPlugin.extract({
             fallback: 'style-loader',
             use: [
@@ -60,6 +40,7 @@ const base = (args) => {
                 loader: 'css-loader',
                 options: {
                   minimize: process.env.NODE_ENV === 'production',
+                  sourceMap: process.env.NODE_ENV === 'production',
                   importLoaders: 1,
                 },
               },
@@ -67,7 +48,7 @@ const base = (args) => {
           }),
         },
         {
-          test: /\.css$/,
+          test: /\.module\.css$/,
           include: path.join(__dirname, src),
           loader: ExtractTextPlugin.extract({
             fallback: 'style-loader',
@@ -76,8 +57,10 @@ const base = (args) => {
                 loader: 'css-loader',
                 options: {
                   minimize: process.env.NODE_ENV === 'production',
+                  sourceMap: process.env.NODE_ENV === 'production',
+                  camelCase: true,
                   modules: true,
-                  localIdentName: '[path][name]__[local]--[hash:base64:5]'
+                  localIdentName: '[path][name]__[local]--[hash:base64:5]',
                 },
               },
             ],
@@ -91,7 +74,7 @@ const base = (args) => {
           test: /\.(eot|svg|ttf|woff|woff2)$/,
           use: `file-loader?name=[name]-[hash].[ext]&publicPath=${publicPath}&outputPath=fonts/`,
         },
-        // 폰트를 제대로 불러오지 못함.
+        // file-loader 와 함께 사용하면 제대로 처리되지 않음.
         // {
         //   test: /\.(png|jpg|gif|eot|svg|ttf|woff|woff2)$/i,
         //   use: {
@@ -108,12 +91,14 @@ const base = (args) => {
             loader: 'babel-loader',
             options: {
               cacheDirectory: true,
-            }
+              babelrc: true,
+            },
           },
         },
       ],
     },
 
+    // 자주 사용되는 경로를 정의한다.
     resolve: {
       alias: {
         _resources: path.resolve(__dirname, `${src}/resources`),
@@ -127,13 +112,6 @@ const base = (args) => {
         // _actions: path.resolve(__dirname, `${src}/actions`),
         // _reducers: path.resolve(__dirname, `${src}/reducers`),
       },
-    },
-
-    devServer: {
-      port,
-      contentBase: dist,
-      disableHostCheck: true,
-      host: '0.0.0.0',
     },
   };
 };

@@ -1,6 +1,6 @@
 {
   "name": "react-datetimepicker-syaku",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "react 용 날짜와 시간 선택기. flatpickr 을 이용하여 개발하였다",
   "author": "Syaku (최석균) <http://syaku.tistory.com>",
   "url": "http://syakuis.github.io/demo/react-datetimepicker",
@@ -35,11 +35,12 @@
   },
   "config": {
     "filename": "react-datetimepicker",
+    "library": "ReactDatetimePicker",
     "publicPath": "",
-    "dist": "dist",
+    "output": "dist",
     "src": "src",
     "entry": "./src/index.js",
-    "port": 8088,
+    "port": 8089,
     "externals": {
       "react": {
         "root": "React",
@@ -69,12 +70,9 @@
   },
   "scripts": {
     "jest": "jest",
-    "p:remove": "yarn remove react-datetimepicker-syaku -D",
-    "build:prod": "NODE_ENV='production' webpack -p --profile --colors --progress",
-    "build:demo": "NODE_ENV='production' SOURCE_TARGET='node' webpack --config webpack.config.demo.js -p --profile --colors --progress",
-    "serv:dev": "NODE_ENV='development' SOURCE_TARGET='local' webpack-dev-server --config webpack.config.dev.js --colors --progress --profile",
-    "serv:demo": "NODE_ENV='development' SOURCE_TARGET='node' webpack-dev-server --config webpack.config.demo.js --colors --progress --profile",
-    "stats:prod": "NODE_ENV='production' webpack --config webpack.config.stats.js -p --colors --progress --profile --json > stats.json"
+    "build": "NODE_ENV='production' webpack --profile --colors --progress",
+    "demo": "NODE_ENV='production' webpack --config webpack.config.demo.js --profile --colors --progress",
+    "dev": "NODE_ENV='development' webpack-dev-server --config webpack.config.dev.js --colors --progress"
   },
   "devDependencies": {
     "babel-core": "^6.23.1",
@@ -107,13 +105,13 @@
     "html-webpack-plugin": "^2.28.0",
     "jest": "^21.1.0",
     "moment": "^2.18.1",
-    "react": "16.0.0",
-    "react-datetimepicker-syaku": "./react-datetimepicker-syaku-v1.0.5.tgz",
-    "react-dom": "16.0.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
     "style-loader": "^0.18.2",
-    "stylelint": "7.12.0",
+    "stylelint": "^7.12.0",
     "stylelint-config-standard": "^16.0.0",
     "stylelint-webpack-plugin": "^0.7.0",
+    "uglifyjs-webpack-plugin": "^1.1.8",
     "url-loader": "^0.5.9",
     "webpack": "2.6.1",
     "webpack-bundle-analyzer": "^2.3.0",
@@ -126,7 +124,7 @@
   "peerDependencies": {
     "flatpickr": "^4.0.0 || ^3.5.0",
     "moment": "^2.18.1",
-    "react": "^15.6.1 || ^16.0.0",
-    "react-dom": "^15.6.1 || ^16.0.0"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   }
 }

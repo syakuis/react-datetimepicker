@@ -20,6 +20,10 @@ const propTypes = {
   className: PropTypes.string,
   style: PropTypes.shape({}),
 
+  iconSuccess: PropTypes.string,
+  iconClear: PropTypes.string,
+  iconOpen: PropTypes.string,
+
   afterOpen: PropTypes.func,
   afterClear: PropTypes.func,
 
@@ -42,6 +46,11 @@ const defaultProps = {
   wrapper: 'div',
   className: undefined,
   style: undefined,
+
+  iconSuccess: 'fa fa-check',
+  iconClear: 'fa fa-close',
+  iconOpen: 'fa fa-calendar',
+
   afterOpen: undefined,
   afterClear: undefined,
 
@@ -94,7 +103,7 @@ class DatetimePicker extends Component {
     this.datetimeRef = undefined;
     this.type = {};
 
-    switch (this.props.type) {
+    switch (props.type) {
       case 'datetime':
         this.type = {
           noCalendar: false,
@@ -164,6 +173,25 @@ class DatetimePicker extends Component {
     });
 
     if (this.props.defaultDate) this.flatpickr.setDate(this.props.defaultDate, true);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const prev = this.props.defaultDate;
+    const next = nextProps.defaultDate;
+    if (next && prev !== next) {
+      let isValid = true;
+      if (Array.isArray(next)) {
+        next.forEach((date) => {
+          if (!moment(date).isValid()) isValid = false;
+        });
+      } else {
+        isValid = moment(next).isValid();
+      }
+
+      if (isValid) {
+        this.setDatetime(next);
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -244,15 +272,15 @@ class DatetimePicker extends Component {
           <span className="input-group-btn">
             {
               this.state.valueChange ?
-                <button className="btn btn-success" type="button" onClick={this.onChangeSuccess}>
-                  <i className="fa fa-check" aria-hidden="true" />
+                <button className="btn btn-default" type="button" onClick={this.onChangeSuccess}>
+                  <i className={this.props.iconSuccess} aria-hidden="true" />
                 </button> : null
             }
-            <button className="btn btn-danger" type="button" onClick={this.onClear}>
-              <i className="fa fa-close" aria-hidden="true" />
+            <button className="btn btn-default" type="button" onClick={this.onClear}>
+              <i className={this.props.iconClear} aria-hidden="true" />
             </button>
             <button className="btn btn-default" type="button" onClick={this.onOpen}>
-              <i className="fa fa-calendar" aria-hidden="true" />
+              <i className={this.props.iconOpen} aria-hidden="true" />
             </button>
           </span>
         </div>

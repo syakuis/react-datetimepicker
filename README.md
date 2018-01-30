@@ -13,11 +13,11 @@ DEMO : http://syakuis.github.io/demo/react-datetimepicker
 ## install
 
 ```
-// required
-$ npm install flatpickr moment
-
 // optional
 $ npm install bootstrap font-awesome
+
+// required
+$ npm install react react-dom flatpickr moment
 
 $ npm install react-datetimepicker-syaku
 
@@ -26,11 +26,23 @@ or
 $ yarn add react-datetimepicker-syaku
 ```
 
+## CDN
+
+```html
+<script src="./dist/react-datetimepicker.min.js"></script>
+```
+
+## es6
+
+```js
+import ReactDatetimePicker from 'react-datetimepicker-syaku';
+```
+
 ## Setting
 
 기본 css style 라이브러리는 Bootstrap 과 Fontawesome 을 사용합니다. 직접 변경도 가능합니다.
 
-```
+```js
 import DatetimePicker from 'react-datetimepicker-syaku';
 
 // flatpickr theme setting (Optional)
