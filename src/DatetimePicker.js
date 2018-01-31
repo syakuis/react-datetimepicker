@@ -180,8 +180,6 @@ class DatetimePicker extends Component {
     this.flatpickr = undefined;
     this.datetimeRef = undefined;
     this.type = uiType(props);
-    this.dateStr = formatDateString(
-      props.mode, props.defaultDate, this.type.dateFormat, this.type.stringFormat);
 
     this.onChange = this.onChange.bind(this);
     this.onChangeSuccess = this.onChangeSuccess.bind(this);
@@ -192,7 +190,8 @@ class DatetimePicker extends Component {
     this.onChangeCallback = this.onChangeCallback.bind(this);
 
     this.state = {
-      dateStr: this.dateStr,
+      dateStr: formatDateString(
+        props.mode, props.defaultDate, this.type.dateFormat, this.type.stringFormat),
       valueChange: false,
     };
   }
@@ -219,15 +218,16 @@ class DatetimePicker extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.dateStr = formatDateString(
-      nextProps.mode, nextProps.defaultDate, this.type.dateFormat, this.type.stringFormat);
+    if (this.props.defaultDate !== nextProps.defaultDate) {
+      this.setState({ dateStr: formatDateString(
+        nextProps.mode, nextProps.defaultDate, this.type.dateFormat, this.type.stringFormat) });
+    }
   }
 
   componentWillUnmount() {
     this.flatpickr.destroy();
     this.flatpickr = undefined;
     this.datetimeRef = undefined;
-    this.dateStr = undefined;
   }
 
   onChangeCallback(selectedDates, dateStr, instance) {
@@ -262,14 +262,14 @@ class DatetimePicker extends Component {
     this.flatpickr.setDate(this.props.defaultDate, false, this.type.dateFormat);
     this.flatpickr.toggle();
     if (typeof this.props.afterOpen === 'function') {
-      this.props.afterOpen(this.props.defaultDate, this.dateStr, this.flatpickr);
+      this.props.afterOpen(this.props.defaultDate, this.state.dateStr, this.flatpickr);
     }
   }
 
   onClear() {
     this.flatpickr.clear();
     if (typeof this.props.afterClear === 'function') {
-      this.props.afterClear(this.props.defaultDate, this.dateStr, this.flatpickr);
+      this.props.afterClear(this.props.defaultDate, this.state.dateStr, this.flatpickr);
     }
   }
 
@@ -300,7 +300,7 @@ class DatetimePicker extends Component {
             readOnly={this.props.readOnly}
             className="form-control"
             value={this.state.dateStr}
-            onChange={this.props.allowInput ? this.onChange : null}
+            onChange={this.props.allowInput || !this.props.readOnly ? this.onChange : null}
             onKeyPress={this.onKeyPress}
             onClick={this.props.clickOpens && !this.props.allowInput ? this.onOpen : null}
           />
