@@ -63,7 +63,7 @@ export const uiType = (props) => {
         dateFormat: props.dateFormat || 'H:i:S',
       };
     default: {
-      const dateFormat = props.dateFormat;
+      const dateFormat = props.dateFormat || 'Y-m-d';
       return { dateFormat };
     }
   }

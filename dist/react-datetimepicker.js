@@ -996,6 +996,7 @@ var dateCompare = exports.dateCompare = function dateCompare(targetDates, startD
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.setLocale = exports.formatDateString = exports.formatDate = exports.parseDate = undefined;
 
 var _DatetimePicker = __webpack_require__(6);
 
@@ -1008,6 +1009,11 @@ exports.default = _DatetimePicker2.default; /**
                                              * @site: http://syaku.tistory.com
                                              * @since: 2017. 9. 26.
                                              */
+
+exports.parseDate = _DatetimePicker.parseDate;
+exports.formatDate = _DatetimePicker.formatDate;
+exports.formatDateString = _DatetimePicker.formatDateString;
+exports.setLocale = _DatetimePicker.setLocale;
 
 /***/ }),
 /* 9 */

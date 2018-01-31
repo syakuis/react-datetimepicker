@@ -65,7 +65,7 @@ const defaultProps = {
   enable: [], // 해당 날짜만 선택할 수 있다.
   disable: [], // 해당 날짜를 선택할 수 없게 한다.
 
-  dateFormat: 'Y-m-d',
+  dateFormat: undefined,
   defaultDate: undefined,
   noCalendar: false, // 날짜 선택기 숨김 enableTime = true 시간 선택기 활성화됨.
   weekNumbers: false, // 주 번호를 표시한다.

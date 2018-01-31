@@ -4,6 +4,7 @@
  * @since: 2017. 9. 26.
  */
 
-import DatetimePicker from './DatetimePicker';
+import DatetimePicker, { parseDate, formatDate, formatDateString, setLocale } from './DatetimePicker';
 
 export default DatetimePicker;
+export { parseDate, formatDate, formatDateString, setLocale };
