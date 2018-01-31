@@ -8,6 +8,8 @@ UI 는 Bootstrap 을 사용했으며 필수는 아닙니다. 직접 UI 를 고�
 
 flatpickr 의 기능을 모두 사용할 수 있습니다.
 
+사용하기 전에 아래의 데모 소스 와 실행 화면을 확인 하시기 바랍니다.
+
 [![Edit React DatetimePicker Demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/v64l7r7mr5)
 
 ## install
@@ -56,10 +58,22 @@ import 'font-awesome/css/font-awesome.css';
 
 ### DatetimePicker options
 
+모든 날짜 데이터는 date type 이여야 한다. `parseDate` 를 이용하여 날짜 형식으로 생성할 수 있다.
+
 ```
 children: undefined, // custom ui
 readOnly: false, // input readOnly
 type: 'date', // input type date, datetime, time
+
+defaultDate: [],
+
+iconSuccess: 'fa fa-check',
+iconClear: 'fa fa-close',
+iconOpen: 'fa fa-calendar',
+
+// 시작일 종료일을 이용하여 입력 제한 및 자동으로 날짜 값을 갱신할 수 있다.
+startDate: undefined,
+endDate: undefined,
 ```
 
 ### flatpickr options
