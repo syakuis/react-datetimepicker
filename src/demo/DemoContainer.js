@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import moment from 'moment';
 
 import locale from 'flatpickr/dist/l10n/ko';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -13,9 +12,9 @@ import 'flatpickr/dist/flatpickr.min.css';
 import InputGroup from './InputGroup';
 import Button from './Button';
 import Multiple from './Multiple';
-import DatetimePicker, { setLocale } from '../DatetimePicker';
+import DatetimePicker, { setLocale, parseDate } from '../DatetimePicker';
 
-setLocale(locale.ko, 'ko');
+setLocale(locale.ko);
 
 class DemoContainer extends React.Component {
   constructor(props) {
@@ -29,7 +28,7 @@ class DemoContainer extends React.Component {
         value: '',
       },
       value2: {
-        datetime: [moment('2011-11-30 20:10').toDate()],
+        datetime: [parseDate('2011-11-30 20:10', 'Y-m-d H:i')],
         value: '',
       },
       value3: {
@@ -37,11 +36,11 @@ class DemoContainer extends React.Component {
         value: '',
       },
       range: {
-        datetime: [moment('2011-11-30 10:20').toDate(), moment('201112301020').toDate()],
+        datetime: [parseDate('2011-11-30 10:20:00', 'Y-m-d H:i:S'), parseDate('2011-12-30 10:20:00', 'Y-m-d H:i:S')],
         value: '',
       },
       multiple: {
-        datetime: [moment('2011-11-30').toDate()],
+        datetime: [parseDate('2011-11-30')],
         value: '',
       },
     };

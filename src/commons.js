@@ -3,9 +3,71 @@
  * @site: http://syaku.tistory.com
  * @since: 2018. 2. 1.
  */
-import moment from 'moment';
 import Flatpickr from 'flatpickr';
 import { arrayEmpty, arrayEquals } from './utils';
+
+export const setLocale = (Locale) => {
+  Flatpickr.localize(Locale);
+};
+
+export const parseDate = (dateStr, dateFormat) => Flatpickr.parseDate(dateStr, dateFormat);
+export const formatDate = (dateObj, dateFormat) => Flatpickr.formatDate(dateObj, dateFormat);
+
+export const flatpickr = (target, config, type, onChange) => (
+  new Flatpickr(target, {
+    ...config,
+    ...type,
+    wrap: false,
+    inline: false,
+    clickOpens: false,
+    allowInput: false,
+    onChange,
+  })
+);
+
+export const formatDateString = (mode, dates, dateFormat) => {
+  if (!Array.isArray(dates) || !dates || (dates && dates.length === 0)) return '';
+  switch (mode) {
+    case 'single': {
+      const dateObj = typeof dates[0] === 'string' ? parseDate(dates[0], dateFormat) : dates[0];
+      return formatDate(dateObj, dateFormat);
+    }
+    case 'multiple': {
+      return [].map.call(dates, (date) => {
+        const dateObj = typeof date === 'string' ? parseDate(date, dateFormat) : date;
+        return formatDate(dateObj, dateFormat);
+      }).join(', ');
+    }
+    case 'range': {
+      const startDateObj = typeof dates[0] === 'string' ? parseDate(dates[0], dateFormat) : dates[0];
+      const endDateObj = typeof dates[1] === 'string' ? parseDate(dates[1], dateFormat) : dates[1];
+      return `${formatDate(startDateObj, dateFormat)} to ${formatDate(endDateObj, dateFormat)}`;
+    }
+    default: return '';
+  }
+};
+
+export const uiType = (props) => {
+  switch (props.type) {
+    case 'datetime':
+      return {
+        noCalendar: false,
+        enableTime: true,
+        dateFormat: props.dateFormat || 'Y-m-d H:i',
+      };
+    case 'time':
+      return {
+        noCalendar: true,
+        enableTime: true,
+        enableSeconds: true,
+        dateFormat: props.dateFormat || 'H:i:S',
+      };
+    default: {
+      const dateFormat = props.dateFormat;
+      return { dateFormat };
+    }
+  }
+};
 
 /**
  * flatpickr 의 설정 disable 에서 사용될 함수를 생성하여 반환한다.
@@ -45,9 +107,9 @@ export const dayDisable = (defaultDate, startDate, endDate) => {
 
 /**
  * 대상 날짜가 빈 배열이면 비교 날짜를 반환한다.
- * 1. 이전 날짜 비교가 아니고 비교 날짜가 대상 날짜 이전이면 비교 날짜를 삽입한다.
- * 2. 이전 날짜 비교이고 비교 날짜가 대상 날짜 이전이면,
- * 혹은 이전 날짜 비교가 아니고 비교 날짜가 대상 날짜 이후이면,
+ * 1. 이전 날짜 비교가 아니고 대상 날짜가 비교 날짜 이전이면 비교 날짜를 삽입한다.
+ * 2. 이전 날짜 비교이고 대상 날짜가 비교 날짜 이전이면,
+ * 혹은 이전 날짜 비교가 아니고 대상 날짜가 비교 날짜 이후이면,
  * 혹은 비교 날짜와 대상 날짜가 같으면 대상 날짜를 삽입한다.
  * 1번과 2번 중 한개만 허용 된다. 둘다 맞지 않으면 빈 배열을 반환한다.
  * @param {array(date)} targetDates 대상 날짜
@@ -58,14 +120,13 @@ const getDateCompareFilter = (targetDates = [], dates = [], before = true) => {
   if (targetDates.length === 0) return dates;
   const result = [];
   targetDates.forEach((target) => {
-    const targetDate = moment(target);
     dates.forEach((date) => {
-      if (!before && targetDate.isBefore(date)) {
+      if (!before && target < date) {
         result.push(date);
-      } else if ((before && targetDate.isBefore(date)) ||
-          (!before && targetDate.isAfter(date)) ||
-          targetDate.isSame(date)) {
-        result.push(targetDate.toDate());
+      } else if ((before && target < date) ||
+          (!before && target > date) ||
+          target.valueOf() === date.valueOf()) {
+        result.push(target);
       }
     });
   });
@@ -88,73 +149,4 @@ export const dateCompare = (targetDates, startDate, endDate) => {
     return getDateCompareFilter(targetDates, endDate);
   }
   return null;
-};
-
-
-export const flatpickr = (target, config, type, onChange) => (
-  new Flatpickr(target, {
-    ...config,
-    ...type,
-    wrap: false,
-    inline: false,
-    clickOpens: false,
-    allowInput: false,
-    parseDate: (date) => {
-      const d = moment(date, type.stringFormat);
-      return d.isValid() ? d.toDate() : null;
-    },
-    onChange,
-  })
-);
-
-export const formatDateString = (mode, dates, dateFormat, stringFormat) => {
-  if (!Array.isArray(dates) || !dates || (dates && dates.length === 0)) return '';
-  switch (mode) {
-    case 'single': {
-      const dateObj = typeof dates[0] === 'string' ? moment(dates[0], stringFormat).toDate() : dates[0];
-      return Flatpickr.formatDate(dateObj, dateFormat);
-    }
-    case 'multiple': {
-      return [].map.call(dates, (date) => {
-        const dateObj = typeof date === 'string' ? moment(date, stringFormat).toDate() : date;
-        return Flatpickr.formatDate(dateObj, dateFormat);
-      }).join(', ');
-    }
-    case 'range': {
-      const startDateObj = typeof dates[0] === 'string' ? moment(dates[0], stringFormat).toDate() : dates[0];
-      const endDateObj = typeof dates[1] === 'string' ? moment(dates[1], stringFormat).toDate() : dates[1];
-      return `${Flatpickr.formatDate(startDateObj, dateFormat)} to ${Flatpickr.formatDate(endDateObj, dateFormat)}`;
-    }
-    default: return '';
-  }
-};
-
-export const uiType = (props) => {
-  switch (props.type) {
-    case 'datetime':
-      return {
-        noCalendar: false,
-        enableTime: true,
-        dateFormat: props.dateFormat || 'Y-m-d H:i',
-        stringFormat: props.stringFormat || 'YYYYMMDDHHmm',
-      };
-    case 'time':
-      return {
-        noCalendar: true,
-        enableTime: true,
-        enableSeconds: true,
-        dateFormat: props.dateFormat || 'H:i:S',
-        stringFormat: props.stringFormat || 'HHmmss',
-      };
-    default: {
-      const stringFormat = props.stringFormat || 'YYYYMMDD';
-      const dateFormat = props.dateFormat || 'Y-m-d';
-      return { dateFormat, stringFormat };
-    }
-  }
-};
-
-export const setLocale = (Locale, locale) => {
-  Flatpickr.localize(Locale);
-  if (locale) moment.locale(locale);
 };

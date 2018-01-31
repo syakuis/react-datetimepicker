@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react"), require("flatpickr"), require("moment"));
+		module.exports = factory(require("react"), require("flatpickr"));
 	else if(typeof define === 'function' && define.amd)
-		define(["react", "flatpickr", "moment"], factory);
+		define(["react", "flatpickr"], factory);
 	else if(typeof exports === 'object')
-		exports["ReactDatetimePicker"] = factory(require("react"), require("flatpickr"), require("moment"));
+		exports["ReactDatetimePicker"] = factory(require("react"), require("flatpickr"));
 	else
-		root["ReactDatetimePicker"] = factory(root["React"], root["flatpickr"], root["moment"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_12__, __WEBPACK_EXTERNAL_MODULE_13__, __WEBPACK_EXTERNAL_MODULE_14__) {
+		root["ReactDatetimePicker"] = factory(root["React"], root["flatpickr"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_14__, __WEBPACK_EXTERNAL_MODULE_15__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -392,6 +392,23 @@ module.exports = ReactPropTypesSecret;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var arrayEmpty = exports.arrayEmpty = function arrayEmpty(obj) {
+  return !obj || obj && obj.length === 0;
+};
+var arrayEquals = exports.arrayEquals = function arrayEquals(obj, obj2) {
+  return JSON.stringify(obj) === JSON.stringify(obj2);
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -457,7 +474,7 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -466,31 +483,23 @@ module.exports = warning;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.setLocale = exports.formatDateString = exports.formatDate = exports.parseDate = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
-                                                                                                                                                                                                                                                                   * flatpickr 를 이용한 날짜와 시간 선택기
-                                                                                                                                                                                                                                                                   * @author: Seok Kyun. Choi. 최석균 (Syaku)
-                                                                                                                                                                                                                                                                   * @site: http://syaku.tistory.com
-                                                                                                                                                                                                                                                                   * @since: 2017. 9. 22.
-                                                                                                                                                                                                                                                                   */
-
-var _react = __webpack_require__(12);
+var _react = __webpack_require__(14);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(11);
+var _propTypes = __webpack_require__(13);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _moment = __webpack_require__(14);
+var _utils = __webpack_require__(4);
 
-var _moment2 = _interopRequireDefault(_moment);
-
-var _flatpickr = __webpack_require__(13);
-
-var _flatpickr2 = _interopRequireDefault(_flatpickr);
+var _commons = __webpack_require__(7);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -500,13 +509,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * flatpickr 를 이용한 날짜와 시간 선택기
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @author: Seok Kyun. Choi. 최석균 (Syaku)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @site: http://syaku.tistory.com
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @since: 2017. 9. 22.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 var propTypes = {
   children: _propTypes2.default.node,
   readOnly: _propTypes2.default.bool,
   type: _propTypes2.default.string,
-  stringFormat: _propTypes2.default.string,
   wrapper: _propTypes2.default.string,
   className: _propTypes2.default.string,
   style: _propTypes2.default.shape({}),
@@ -515,23 +528,27 @@ var propTypes = {
   iconClear: _propTypes2.default.string,
   iconOpen: _propTypes2.default.string,
 
-  afterOpen: _propTypes2.default.func,
-  afterClear: _propTypes2.default.func,
+  // only mode single
+  startDate: _propTypes2.default.arrayOf(_propTypes2.default.instanceOf(Date)),
+  endDate: _propTypes2.default.arrayOf(_propTypes2.default.instanceOf(Date)),
 
   // flatpickr config
-  onChange: _propTypes2.default.func,
+  mode: _propTypes2.default.string,
   dateFormat: _propTypes2.default.string,
-  defaultDate: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.array]),
+  // only date type
+  defaultDate: _propTypes2.default.arrayOf(_propTypes2.default.instanceOf(Date)),
   clickOpens: _propTypes2.default.bool,
-  allowInput: _propTypes2.default.bool
+  allowInput: _propTypes2.default.bool,
+  disable: _propTypes2.default.arrayOf(_propTypes2.default.object),
+  minDate: _propTypes2.default.instanceOf(Date),
+  maxDate: _propTypes2.default.instanceOf(Date),
+  onChange: _propTypes2.default.func
 };
 
 var defaultProps = {
   children: undefined,
-  onDatetime: undefined,
   readOnly: false,
   type: 'date', // date, datetime, time
-  stringFormat: 'YYYYMMDD',
   wrapper: 'div',
   className: undefined,
   style: undefined,
@@ -540,8 +557,8 @@ var defaultProps = {
   iconClear: 'fa fa-close',
   iconOpen: 'fa fa-calendar',
 
-  afterOpen: undefined,
-  afterClear: undefined,
+  startDate: undefined,
+  endDate: undefined,
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -574,63 +591,17 @@ var defaultProps = {
   nextArrow: '>', // 달력 이동 버튼 아이콘
   prevArrow: '<', // 달력 이동 버튼 아이콘
 
-  onChange: null,
-  onReady: null,
-  onOpen: null,
-  onClose: null
-};
+  onChange: undefined,
+  onReady: undefined,
+  onOpen: undefined,
+  onClose: undefined,
 
-var flatpickr = function flatpickr(target, config, type, onChange) {
-  return new _flatpickr2.default(target, _extends({}, config, type, {
-    wrap: false,
-    inline: false,
-    clickOpens: false,
-    allowInput: false,
-    parseDate: function parseDate(date) {
-      var d = (0, _moment2.default)(date, type.stringFormat);
-      return d.isValid() ? d.toDate() : null;
-    },
-    onChange: onChange
-  }));
-};
-
-var uiType = function uiType(props) {
-  switch (props.type) {
-    case 'datetime':
-      return {
-        noCalendar: false,
-        enableTime: true,
-        dateFormat: 'Y-m-d H:i',
-        stringFormat: 'YYYYMMDDHHmm'
-      };
-    case 'time':
-      return {
-        noCalendar: true,
-        enableTime: true,
-        enableSeconds: true,
-        dateFormat: 'H:i:S',
-        stringFormat: 'HHmmss'
-      };
-    default:
-      {
-        var dateFormat = props.dateFormat,
-            stringFormat = props.stringFormat;
-
-        return { dateFormat: dateFormat, stringFormat: stringFormat };
-      }
-  }
+  minDate: (0, _commons.parseDate)('1800-01-01'),
+  maxDate: undefined
 };
 
 var DatetimePicker = function (_Component) {
   _inherits(DatetimePicker, _Component);
-
-  _createClass(DatetimePicker, null, [{
-    key: 'setLocale',
-    value: function setLocale(Locale, locale) {
-      _flatpickr2.default.localize(Locale);
-      if (locale) _moment2.default.locale(locale);
-    }
-  }]);
 
   function DatetimePicker(props) {
     _classCallCheck(this, DatetimePicker);
@@ -639,19 +610,21 @@ var DatetimePicker = function (_Component) {
 
     _this.flatpickr = undefined;
     _this.datetimeRef = undefined;
-    _this.type = uiType(props);
+    _this.type = (0, _commons.uiType)(props);
 
     _this.onChange = _this.onChange.bind(_this);
     _this.onChangeSuccess = _this.onChangeSuccess.bind(_this);
     _this.onKeyPress = _this.onKeyPress.bind(_this);
+    _this.onBlur = _this.onBlur.bind(_this);
     _this.onOpen = _this.onOpen.bind(_this);
     _this.onClear = _this.onClear.bind(_this);
     _this.setDatetime = _this.setDatetime.bind(_this);
     _this.onChangeCallback = _this.onChangeCallback.bind(_this);
 
+    var dateStr = (0, _commons.formatDateString)(props.mode, props.defaultDate, _this.type.dateFormat);
+
     _this.state = {
-      selectedDates: [],
-      dateStr: '',
+      dateStr: dateStr,
       valueChange: false
     };
     return _this;
@@ -664,19 +637,22 @@ var DatetimePicker = function (_Component) {
           children = _props.children,
           readOnly = _props.readOnly,
           type = _props.type,
-          stringFormat = _props.stringFormat,
           wrapper = _props.wrapper,
           className = _props.className,
           style = _props.style,
           iconSuccess = _props.iconSuccess,
           iconClear = _props.iconClear,
           iconOpen = _props.iconOpen,
-          afterOpen = _props.afterOpen,
-          afterClear = _props.afterClear,
-          props = _objectWithoutProperties(_props, ['children', 'readOnly', 'type', 'stringFormat', 'wrapper', 'className', 'style', 'iconSuccess', 'iconClear', 'iconOpen', 'afterOpen', 'afterClear']);
+          props = _objectWithoutProperties(_props, ['children', 'readOnly', 'type', 'wrapper', 'className', 'style', 'iconSuccess', 'iconClear', 'iconOpen']);
 
-      this.flatpickr = flatpickr(this.datetimeRef, props, this.type, this.onChangeCallback);
-      if (this.props.defaultDate) this.setDatetime(this.props.defaultDate);
+      this.flatpickr = (0, _commons.flatpickr)(this.datetimeRef, props, this.type, this.onChangeCallback);
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (!(0, _utils.arrayEquals)(this.props.defaultDate, nextProps.defaultDate)) {
+        this.setState({ dateStr: (0, _commons.formatDateString)(nextProps.mode, nextProps.defaultDate, this.type.dateFormat) });
+      }
     }
   }, {
     key: 'componentWillUnmount',
@@ -688,7 +664,8 @@ var DatetimePicker = function (_Component) {
   }, {
     key: 'onChangeCallback',
     value: function onChangeCallback(selectedDates, dateStr, instance) {
-      this.setState({ selectedDates: selectedDates, dateStr: dateStr });
+      if (this.props.mode === 'range' && (!selectedDates || selectedDates && selectedDates.length < 2)) return;
+      this.setState({ dateStr: dateStr });
       if (typeof this.props.onChange === 'function') {
         this.props.onChange(selectedDates, dateStr, instance);
       }
@@ -707,33 +684,52 @@ var DatetimePicker = function (_Component) {
   }, {
     key: 'onChangeSuccess',
     value: function onChangeSuccess() {
-      this.setDatetime(this.state.dateStr);
-      this.setState({
-        valueChange: false
+      var _this2 = this;
+
+      this.setState(function () {
+        return {
+          valueChange: false
+        };
+      }, function () {
+        _this2.setDatetime(_this2.state.dateStr);
       });
+    }
+  }, {
+    key: 'onBlur',
+    value: function onBlur() {
+      if (this.state.valueChange) this.onChangeSuccess();
     }
   }, {
     key: 'onKeyPress',
     value: function onKeyPress(e) {
-      if (e.key === 'Enter') {
+      if (this.state.valueChange && e.key === 'Enter') {
         this.onChangeSuccess();
       }
     }
   }, {
     key: 'onOpen',
     value: function onOpen() {
-      this.flatpickr.toggle();
-      if (typeof this.props.afterOpen === 'function') {
-        this.props.afterOpen(this.state.selectedDates, this.state.dateStr, this.flatpickr);
+      if (this.props.mode === 'single') {
+        var defaultDate = (0, _commons.dateCompare)(this.props.defaultDate, this.props.startDate, this.props.endDate) || this.props.defaultDate;
+        this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
+
+        if ((0, _utils.arrayEmpty)(this.props.disable)) {
+          var disable = (0, _commons.dayDisable)(defaultDate, this.props.startDate, this.props.endDate);
+          if (disable) {
+            this.flatpickr.set('disable', disable);
+            this.flatpickr.redraw();
+          }
+        }
+      } else {
+        this.flatpickr.setDate(this.props.defaultDate, true, this.type.dateFormat);
       }
+
+      this.flatpickr.toggle();
     }
   }, {
     key: 'onClear',
     value: function onClear() {
       this.flatpickr.clear();
-      if (typeof this.props.afterClear === 'function') {
-        this.props.afterClear(this.state.selectedDates, this.state.dateStr, this.flatpickr);
-      }
     }
   }, {
     key: 'setDatetime',
@@ -745,7 +741,7 @@ var DatetimePicker = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       var _props2 = this.props,
           className = _props2.className,
@@ -754,14 +750,14 @@ var DatetimePicker = function (_Component) {
 
       return this.props.children ? _react2.default.createElement(this.props.wrapper, _extends({}, className, style, {
         ref: function ref(node) {
-          _this2.datetimeRef = node;
+          _this3.datetimeRef = node;
         }
       }), this.props.children) : _react2.default.createElement(
         'div',
         {
           className: 'input-group ' + (this.props.className ? this.props.className : ''),
           ref: function ref(node) {
-            _this2.datetimeRef = node;
+            _this3.datetimeRef = node;
           }
         },
         _react2.default.createElement('input', {
@@ -769,8 +765,9 @@ var DatetimePicker = function (_Component) {
           readOnly: this.props.readOnly,
           className: 'form-control',
           value: this.state.dateStr,
-          onChange: this.props.allowInput ? this.onChange : null,
+          onChange: this.props.allowInput || !this.props.readOnly ? this.onChange : null,
           onKeyPress: this.onKeyPress,
+          onBlur: this.onBlur,
           onClick: this.props.clickOpens && !this.props.allowInput ? this.onOpen : null
         }),
         _react2.default.createElement(
@@ -803,9 +800,194 @@ DatetimePicker.propTypes = propTypes;
 DatetimePicker.defaultProps = defaultProps;
 
 exports.default = DatetimePicker;
+exports.parseDate = _commons.parseDate;
+exports.formatDate = _commons.formatDate;
+exports.formatDateString = _commons.formatDateString;
+exports.setLocale = _commons.setLocale;
 
 /***/ }),
-/* 6 */
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.dateCompare = exports.dayDisable = exports.uiType = exports.formatDateString = exports.flatpickr = exports.formatDate = exports.parseDate = exports.setLocale = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
+                                                                                                                                                                                                                                                                   * @author: Seok Kyun. Choi. 최석균 (Syaku)
+                                                                                                                                                                                                                                                                   * @site: http://syaku.tistory.com
+                                                                                                                                                                                                                                                                   * @since: 2018. 2. 1.
+                                                                                                                                                                                                                                                                   */
+
+
+var _flatpickr = __webpack_require__(15);
+
+var _flatpickr2 = _interopRequireDefault(_flatpickr);
+
+var _utils = __webpack_require__(4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setLocale = exports.setLocale = function setLocale(Locale) {
+  _flatpickr2.default.localize(Locale);
+};
+
+var parseDate = exports.parseDate = function parseDate(dateStr, dateFormat) {
+  return _flatpickr2.default.parseDate(dateStr, dateFormat);
+};
+var formatDate = exports.formatDate = function formatDate(dateObj, dateFormat) {
+  return _flatpickr2.default.formatDate(dateObj, dateFormat);
+};
+
+var flatpickr = exports.flatpickr = function flatpickr(target, config, type, onChange) {
+  return new _flatpickr2.default(target, _extends({}, config, type, {
+    wrap: false,
+    inline: false,
+    clickOpens: false,
+    allowInput: false,
+    onChange: onChange
+  }));
+};
+
+var formatDateString = exports.formatDateString = function formatDateString(mode, dates, dateFormat) {
+  if (!Array.isArray(dates) || !dates || dates && dates.length === 0) return '';
+  switch (mode) {
+    case 'single':
+      {
+        var dateObj = typeof dates[0] === 'string' ? parseDate(dates[0], dateFormat) : dates[0];
+        return formatDate(dateObj, dateFormat);
+      }
+    case 'multiple':
+      {
+        return [].map.call(dates, function (date) {
+          var dateObj = typeof date === 'string' ? parseDate(date, dateFormat) : date;
+          return formatDate(dateObj, dateFormat);
+        }).join(', ');
+      }
+    case 'range':
+      {
+        var startDateObj = typeof dates[0] === 'string' ? parseDate(dates[0], dateFormat) : dates[0];
+        var endDateObj = typeof dates[1] === 'string' ? parseDate(dates[1], dateFormat) : dates[1];
+        return formatDate(startDateObj, dateFormat) + ' to ' + formatDate(endDateObj, dateFormat);
+      }
+    default:
+      return '';
+  }
+};
+
+var uiType = exports.uiType = function uiType(props) {
+  switch (props.type) {
+    case 'datetime':
+      return {
+        noCalendar: false,
+        enableTime: true,
+        dateFormat: props.dateFormat || 'Y-m-d H:i'
+      };
+    case 'time':
+      return {
+        noCalendar: true,
+        enableTime: true,
+        enableSeconds: true,
+        dateFormat: props.dateFormat || 'H:i:S'
+      };
+    default:
+      {
+        var dateFormat = props.dateFormat;
+        return { dateFormat: dateFormat };
+      }
+  }
+};
+
+/**
+ * flatpickr 의 설정 disable 에서 사용될 함수를 생성하여 반환한다.
+ * 생성이 되지 않는 경우 [] 을 반환한다.
+ * -----------------------------------------------------
+ * 현재 날짜와 종료 날짜가 같으면 null 을 반환한다.
+ * 시작 및 종료 날짜는 한개만 사용할 수 있다.
+ * 대상 날짜가 시작 날짜보다 크거나 같은 경우 비활성화 된다.
+ * 대상 날짜가 종료 날짜보다 작거나 같은 경우 비활성화 된다.
+ * 그외 날짜는 활성화 된다.
+ * @dependency flatpickr
+ * @param {array(date)} defaultDate 현재 날짜.
+ * @param {array(date)} startDate 시작 날짜.
+ * @param {array(date)} endDate 종료 날짜.
+ */
+var dayDisable = exports.dayDisable = function dayDisable(defaultDate, startDate, endDate) {
+  if (!(0, _utils.arrayEmpty)(startDate)) {
+    return [function (date) {
+      var accept = true;
+      startDate.forEach(function (d) {
+        if (date >= d) accept = false;
+      });
+      return accept;
+    }];
+  } else if (!(0, _utils.arrayEmpty)(endDate)) {
+    if ((0, _utils.arrayEquals)(defaultDate, endDate)) return [];
+    return [function (date) {
+      var accept = true;
+      endDate.forEach(function (d) {
+        if (date <= d) accept = false;
+      });
+      return accept;
+    }];
+  }
+  return [];
+};
+
+/**
+ * 대상 날짜가 빈 배열이면 비교 날짜를 반환한다.
+ * 1. 이전 날짜 비교가 아니고 대상 날짜가 비교 날짜 이전이면 비교 날짜를 삽입한다.
+ * 2. 이전 날짜 비교이고 대상 날짜가 비교 날짜 이전이면,
+ * 혹은 이전 날짜 비교가 아니고 대상 날짜가 비교 날짜 이후이면,
+ * 혹은 비교 날짜와 대상 날짜가 같으면 대상 날짜를 삽입한다.
+ * 1번과 2번 중 한개만 허용 된다. 둘다 맞지 않으면 빈 배열을 반환한다.
+ * @param {array(date)} targetDates 대상 날짜
+ * @param {array(date)} dates 비교 날짜
+ * @param {bool} before 이전 날짜를 비교한다.
+ */
+var getDateCompareFilter = function getDateCompareFilter() {
+  var targetDates = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var dates = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var before = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+  if (targetDates.length === 0) return dates;
+  var result = [];
+  targetDates.forEach(function (target) {
+    dates.forEach(function (date) {
+      if (!before && target < date) {
+        result.push(date);
+      } else if (before && target < date || !before && target > date || target.valueOf() === date.valueOf()) {
+        result.push(target);
+      }
+    });
+  });
+
+  return result;
+};
+
+/**
+ * 시작 와 종료 날짜 한개만 사용할 수 있다.
+ * 시작 날짜는 대상 날짜 이후와 같은 날짜만 허용된다.
+ * 종료 날짜는 대상 날짜 이전와 같은 날짜만 허용된다.
+ * @param {*} targetDates 내부 선택된 날짜
+ * @param {*} startDate 시작 날짜
+ * @param {*} endDate 종료 날짜
+ */
+var dateCompare = exports.dateCompare = function dateCompare(targetDates, startDate, endDate) {
+  if (startDate && startDate.length) {
+    return getDateCompareFilter(targetDates, startDate, false);
+  } else if (endDate && endDate.length) {
+    return getDateCompareFilter(targetDates, endDate);
+  }
+  return null;
+};
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -815,7 +997,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _DatetimePicker = __webpack_require__(5);
+var _DatetimePicker = __webpack_require__(6);
 
 var _DatetimePicker2 = _interopRequireDefault(_DatetimePicker);
 
@@ -828,7 +1010,7 @@ exports.default = _DatetimePicker2.default; /**
                                              */
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -925,7 +1107,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -940,7 +1122,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(2);
-  var warning = __webpack_require__(4);
+  var warning = __webpack_require__(5);
   var ReactPropTypesSecret = __webpack_require__(3);
   var loggedTypeFailures = {};
 }
@@ -992,7 +1174,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1057,7 +1239,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1072,11 +1254,11 @@ module.exports = function() {
 
 var emptyFunction = __webpack_require__(1);
 var invariant = __webpack_require__(2);
-var warning = __webpack_require__(4);
-var assign = __webpack_require__(7);
+var warning = __webpack_require__(5);
+var assign = __webpack_require__(9);
 
 var ReactPropTypesSecret = __webpack_require__(3);
-var checkPropTypes = __webpack_require__(8);
+var checkPropTypes = __webpack_require__(10);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -1607,7 +1789,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -1632,32 +1814,26 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(10)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(12)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(9)();
+  module.exports = __webpack_require__(11)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_12__;
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_13__;
 
 /***/ }),
 /* 14 */
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE_14__;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_15__;
 
 /***/ })
 /******/ ]);

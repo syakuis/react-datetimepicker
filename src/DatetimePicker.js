@@ -7,16 +7,14 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
-import { arrayEmpty } from './utils';
-import { flatpickr, setLocale, formatDateString, uiType, dateCompare, dayDisable } from './commons';
+import { arrayEmpty, arrayEquals } from './utils';
+import { flatpickr, setLocale, parseDate, formatDate, formatDateString, uiType, dateCompare, dayDisable } from './commons';
 
 const propTypes = {
   children: PropTypes.node,
   readOnly: PropTypes.bool,
   type: PropTypes.string,
-  stringFormat: PropTypes.string,
   wrapper: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.shape({}),
@@ -25,7 +23,7 @@ const propTypes = {
   iconClear: PropTypes.string,
   iconOpen: PropTypes.string,
 
-  // only date type
+  // only mode single
   startDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
   endDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
 
@@ -46,7 +44,6 @@ const defaultProps = {
   children: undefined,
   readOnly: false,
   type: 'date', // date, datetime, time
-  stringFormat: undefined,
   wrapper: 'div',
   className: undefined,
   style: undefined,
@@ -68,7 +65,7 @@ const defaultProps = {
   enable: [], // 해당 날짜만 선택할 수 있다.
   disable: [], // 해당 날짜를 선택할 수 없게 한다.
 
-  dateFormat: undefined,
+  dateFormat: 'Y-m-d',
   defaultDate: undefined,
   noCalendar: false, // 날짜 선택기 숨김 enableTime = true 시간 선택기 활성화됨.
   weekNumbers: false, // 주 번호를 표시한다.
@@ -94,7 +91,7 @@ const defaultProps = {
   onOpen: undefined,
   onClose: undefined,
 
-  minDate: moment('1800-01-01').toDate(),
+  minDate: parseDate('1800-01-01'),
   maxDate: undefined,
 };
 
@@ -116,7 +113,7 @@ class DatetimePicker extends Component {
     this.onChangeCallback = this.onChangeCallback.bind(this);
 
     const dateStr = formatDateString(
-      props.mode, props.defaultDate, this.type.dateFormat, this.type.stringFormat);
+      props.mode, props.defaultDate, this.type.dateFormat);
 
     this.state = {
       dateStr,
@@ -129,7 +126,6 @@ class DatetimePicker extends Component {
       children,
       readOnly,
       type,
-      stringFormat,
       wrapper,
       className,
       style,
@@ -143,9 +139,9 @@ class DatetimePicker extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(this.props.defaultDate) !== JSON.stringify(nextProps.defaultDate)) {
+    if (!arrayEquals(this.props.defaultDate, nextProps.defaultDate)) {
       this.setState({ dateStr: formatDateString(
-        nextProps.mode, nextProps.defaultDate, this.type.dateFormat, this.type.stringFormat) });
+        nextProps.mode, nextProps.defaultDate, this.type.dateFormat) });
     }
   }
 
@@ -190,18 +186,22 @@ class DatetimePicker extends Component {
   }
 
   onOpen() {
-    const defaultDate =
-      dateCompare(this.props.defaultDate, this.props.startDate, this.props.endDate)
-      || this.props.defaultDate;
-    this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
+    if (this.props.mode === 'single') {
+      const defaultDate =
+        dateCompare(this.props.defaultDate, this.props.startDate, this.props.endDate)
+        || this.props.defaultDate;
+      this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
 
-    if (arrayEmpty(this.props.disable)) {
-      const disable = dayDisable(
-        defaultDate, this.props.startDate, this.props.endDate);
-      if (disable) {
-        this.flatpickr.set('disable', disable);
-        this.flatpickr.redraw();
+      if (arrayEmpty(this.props.disable)) {
+        const disable = dayDisable(
+          defaultDate, this.props.startDate, this.props.endDate);
+        if (disable) {
+          this.flatpickr.set('disable', disable);
+          this.flatpickr.redraw();
+        }
       }
+    } else {
+      this.flatpickr.setDate(this.props.defaultDate, true, this.type.dateFormat);
     }
 
     this.flatpickr.toggle();
@@ -266,4 +266,4 @@ DatetimePicker.propTypes = propTypes;
 DatetimePicker.defaultProps = defaultProps;
 
 export default DatetimePicker;
-export { formatDateString, setLocale };
+export { parseDate, formatDate, formatDateString, setLocale };
