@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 
 import locale from 'flatpickr/dist/l10n/ko';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -12,9 +13,9 @@ import 'flatpickr/dist/flatpickr.min.css';
 import InputGroup from './InputGroup';
 import Button from './Button';
 import Multiple from './Multiple';
-import DatetimePicker from '../DatetimePicker';
+import DatetimePicker, { setLocale } from '../DatetimePicker';
 
-DatetimePicker.setLocale(locale.ko, 'ko');
+setLocale(locale.ko, 'ko');
 
 class DemoContainer extends React.Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class DemoContainer extends React.Component {
         value: '',
       },
       value2: {
-        datetime: ['2011-11-30 20:10'],
+        datetime: [moment('2011-11-30 20:10').toDate()],
         value: '',
       },
       value3: {
@@ -36,11 +37,11 @@ class DemoContainer extends React.Component {
         value: '',
       },
       range: {
-        datetime: ['2011-11-30 10:20', '201112301020'],
+        datetime: [moment('2011-11-30 10:20').toDate(), moment('201112301020').toDate()],
         value: '',
       },
       multiple: {
-        datetime: ['2011-11-30'],
+        datetime: [moment('2011-11-30').toDate()],
         value: '',
       },
     };
@@ -75,7 +76,7 @@ class DemoContainer extends React.Component {
         </nav>
 
         <div>
-          <a href="https://codesandbox.io/s/v64l7r7mr5" target="_blank">
+          <a target="_blank" rel="noopener noreferrer" href="https://codesandbox.io/s/v64l7r7mr5">
             <img alt="Edit React DatetimePicker Demo" src="https://codesandbox.io/static/img/play-codesandbox.svg" />
           </a>
 

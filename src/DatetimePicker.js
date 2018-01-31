@@ -8,7 +8,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import Flatpickr from 'flatpickr';
+
+import { arrayEmpty } from './utils';
+import { flatpickr, setLocale, formatDateString, uiType, dateCompare, dayDisable } from './commons';
 
 const propTypes = {
   children: PropTypes.node,
@@ -23,18 +25,20 @@ const propTypes = {
   iconClear: PropTypes.string,
   iconOpen: PropTypes.string,
 
-  afterOpen: PropTypes.func,
-  afterClear: PropTypes.func,
+  // only date type
+  startDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  endDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
 
   // flatpickr config
   mode: PropTypes.string,
   dateFormat: PropTypes.string,
-  defaultDate: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]),
+  // only date type
+  defaultDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
   clickOpens: PropTypes.bool,
   allowInput: PropTypes.bool,
+  disable: PropTypes.arrayOf(PropTypes.object),
+  minDate: PropTypes.instanceOf(Date),
+  maxDate: PropTypes.instanceOf(Date),
   onChange: PropTypes.func,
 };
 
@@ -51,8 +55,8 @@ const defaultProps = {
   iconClear: 'fa fa-close',
   iconOpen: 'fa fa-calendar',
 
-  afterOpen: undefined,
-  afterClear: undefined,
+  startDate: undefined,
+  endDate: undefined,
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -85,95 +89,16 @@ const defaultProps = {
   nextArrow: '>', // 달력 이동 버튼 아이콘
   prevArrow: '<', // 달력 이동 버튼 아이콘
 
-  onChange: null,
-  onReady: null,
-  onOpen: null,
-  onClose: null,
-};
+  onChange: undefined,
+  onReady: undefined,
+  onOpen: undefined,
+  onClose: undefined,
 
-const flatpickr = (target, config, type, onChange) => (
-  new Flatpickr(target, {
-    ...config,
-    ...type,
-    wrap: false,
-    inline: false,
-    clickOpens: false,
-    allowInput: false,
-    parseDate: (date) => {
-      const d = moment(date, type.stringFormat);
-      return d.isValid() ? d.toDate() : null;
-    },
-    onChange,
-  })
-);
-
-const formatDateString = (mode, dates, dateFormat, stringFormat) => {
-  if (!Array.isArray(dates) || !dates || (dates && dates.length === 0)) return '';
-  switch (mode) {
-    case 'single': {
-      const dateObj = typeof dates[0] === 'string' ? moment(dates[0], stringFormat).toDate() : dates[0];
-      return Flatpickr.formatDate(dateObj, dateFormat);
-    }
-    case 'multiple': {
-      return [].map.call(dates, (date) => {
-        const dateObj = typeof date === 'string' ? moment(date, stringFormat).toDate() : date;
-        return Flatpickr.formatDate(dateObj, dateFormat);
-      }).join(', ');
-    }
-    case 'range': {
-      const startDateObj = typeof dates[0] === 'string' ? moment(dates[0], stringFormat).toDate() : dates[0];
-      const endDateObj = typeof dates[1] === 'string' ? moment(dates[1], stringFormat).toDate() : dates[1];
-      return `${Flatpickr.formatDate(startDateObj, dateFormat)} to ${Flatpickr.formatDate(endDateObj, dateFormat)}`;
-    }
-    default: return '';
-  }
-};
-
-const uiType = (props) => {
-  switch (props.type) {
-    case 'datetime':
-      return {
-        noCalendar: false,
-        enableTime: true,
-        dateFormat: props.dateFormat || 'Y-m-d H:i',
-        stringFormat: props.stringFormat || 'YYYYMMDDHHmm',
-      };
-    case 'time':
-      return {
-        noCalendar: true,
-        enableTime: true,
-        enableSeconds: true,
-        dateFormat: props.dateFormat || 'H:i:S',
-        stringFormat: props.stringFormat || 'HHmmss',
-      };
-    default: {
-      const stringFormat = props.stringFormat || 'YYYYMMDD';
-      const dateFormat = props.dateFormat || 'Y-m-d';
-      return { dateFormat, stringFormat };
-    }
-  }
-};
-
-const dateCompare = (targetDates, selectDates, before = true) => {
-  const result = [];
-  targetDates.forEach((target) => {
-    const targetDate = moment(target);
-    selectDates.forEach((select) => {
-      if ((before && targetDate.isBefore(select)) ||
-          (!before && targetDate.isAfter(select)) ||
-          targetDate.isSame(select)) result.push(select);
-    });
-  });
-
-  return result;
+  minDate: moment('1800-01-01').toDate(),
+  maxDate: undefined,
 };
 
 class DatetimePicker extends Component {
-  static setLocale(Locale, locale) {
-    Flatpickr.localize(Locale);
-    if (locale) moment.locale(locale);
-  }
-
   constructor(props) {
     super(props);
 
@@ -184,14 +109,17 @@ class DatetimePicker extends Component {
     this.onChange = this.onChange.bind(this);
     this.onChangeSuccess = this.onChangeSuccess.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.onBlur = this.onBlur.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onClear = this.onClear.bind(this);
     this.setDatetime = this.setDatetime.bind(this);
     this.onChangeCallback = this.onChangeCallback.bind(this);
 
+    const dateStr = formatDateString(
+      props.mode, props.defaultDate, this.type.dateFormat, this.type.stringFormat);
+
     this.state = {
-      dateStr: formatDateString(
-        props.mode, props.defaultDate, this.type.dateFormat, this.type.stringFormat),
+      dateStr,
       valueChange: false,
     };
   }
@@ -208,17 +136,14 @@ class DatetimePicker extends Component {
       iconSuccess,
       iconClear,
       iconOpen,
-      afterOpen,
-      afterClear,
       ...props
     } = this.props;
 
     this.flatpickr = flatpickr(this.datetimeRef, props, this.type, this.onChangeCallback);
-    // if (this.props.defaultDate) this.setDatetime(this.props.defaultDate);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.defaultDate !== nextProps.defaultDate) {
+    if (JSON.stringify(this.props.defaultDate) !== JSON.stringify(nextProps.defaultDate)) {
       this.setState({ dateStr: formatDateString(
         nextProps.mode, nextProps.defaultDate, this.type.dateFormat, this.type.stringFormat) });
     }
@@ -232,7 +157,7 @@ class DatetimePicker extends Component {
 
   onChangeCallback(selectedDates, dateStr, instance) {
     if (this.props.mode === 'range' && (!selectedDates || (selectedDates && selectedDates.length < 2))) return;
-    this.setState({ selectedDates, dateStr });
+    this.setState({ dateStr });
     if (typeof this.props.onChange === 'function') {
       this.props.onChange(selectedDates, dateStr, instance);
     }
@@ -249,28 +174,41 @@ class DatetimePicker extends Component {
   }
 
   onChangeSuccess() {
-    this.setDatetime(this.state.dateStr);
+    this.setState(() => ({
+      valueChange: false,
+    }), () => { this.setDatetime(this.state.dateStr); });
+  }
+
+  onBlur() {
+    if (this.state.valueChange) this.onChangeSuccess();
   }
 
   onKeyPress(e) {
-    if (e.key === 'Enter') {
+    if (this.state.valueChange && e.key === 'Enter') {
       this.onChangeSuccess();
     }
   }
 
   onOpen() {
-    this.flatpickr.setDate(this.props.defaultDate, false, this.type.dateFormat);
-    this.flatpickr.toggle();
-    if (typeof this.props.afterOpen === 'function') {
-      this.props.afterOpen(this.props.defaultDate, this.state.dateStr, this.flatpickr);
+    const defaultDate =
+      dateCompare(this.props.defaultDate, this.props.startDate, this.props.endDate)
+      || this.props.defaultDate;
+    this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
+
+    if (arrayEmpty(this.props.disable)) {
+      const disable = dayDisable(
+        defaultDate, this.props.startDate, this.props.endDate);
+      if (disable) {
+        this.flatpickr.set('disable', disable);
+        this.flatpickr.redraw();
+      }
     }
+
+    this.flatpickr.toggle();
   }
 
   onClear() {
     this.flatpickr.clear();
-    if (typeof this.props.afterClear === 'function') {
-      this.props.afterClear(this.props.defaultDate, this.state.dateStr, this.flatpickr);
-    }
   }
 
   setDatetime(value, triggerChange = true) {
@@ -302,6 +240,7 @@ class DatetimePicker extends Component {
             value={this.state.dateStr}
             onChange={this.props.allowInput || !this.props.readOnly ? this.onChange : null}
             onKeyPress={this.onKeyPress}
+            onBlur={this.onBlur}
             onClick={this.props.clickOpens && !this.props.allowInput ? this.onOpen : null}
           />
           <span className="input-group-btn">
@@ -327,4 +266,4 @@ DatetimePicker.propTypes = propTypes;
 DatetimePicker.defaultProps = defaultProps;
 
 export default DatetimePicker;
-export { formatDateString, dateCompare };
+export { formatDateString, setLocale };
