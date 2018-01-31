@@ -27,7 +27,7 @@ const propTypes = {
   afterClear: PropTypes.func,
 
   // flatpickr config
-  onChange: PropTypes.func,
+  mode: PropTypes.string,
   dateFormat: PropTypes.string,
   defaultDate: PropTypes.oneOfType([
     PropTypes.string,
@@ -35,14 +35,14 @@ const propTypes = {
   ]),
   clickOpens: PropTypes.bool,
   allowInput: PropTypes.bool,
+  onChange: PropTypes.func,
 };
 
 const defaultProps = {
   children: undefined,
-  onDatetime: undefined,
   readOnly: false,
   type: 'date', // date, datetime, time
-  stringFormat: 'YYYYMMDD',
+  stringFormat: undefined,
   wrapper: 'div',
   className: undefined,
   style: undefined,
@@ -64,7 +64,7 @@ const defaultProps = {
   enable: [], // 해당 날짜만 선택할 수 있다.
   disable: [], // 해당 날짜를 선택할 수 없게 한다.
 
-  dateFormat: 'Y-m-d',
+  dateFormat: undefined,
   defaultDate: undefined,
   noCalendar: false, // 날짜 선택기 숨김 enableTime = true 시간 선택기 활성화됨.
   weekNumbers: false, // 주 번호를 표시한다.
@@ -107,28 +107,65 @@ const flatpickr = (target, config, type, onChange) => (
   })
 );
 
+const formatDateString = (mode, dates, dateFormat, stringFormat) => {
+  if (!Array.isArray(dates) || !dates || (dates && dates.length === 0)) return '';
+  switch (mode) {
+    case 'single': {
+      const dateObj = typeof dates[0] === 'string' ? moment(dates[0], stringFormat).toDate() : dates[0];
+      return Flatpickr.formatDate(dateObj, dateFormat);
+    }
+    case 'multiple': {
+      return [].map.call(dates, (date) => {
+        const dateObj = typeof date === 'string' ? moment(date, stringFormat).toDate() : date;
+        return Flatpickr.formatDate(dateObj, dateFormat);
+      }).join(', ');
+    }
+    case 'range': {
+      const startDateObj = typeof dates[0] === 'string' ? moment(dates[0], stringFormat).toDate() : dates[0];
+      const endDateObj = typeof dates[1] === 'string' ? moment(dates[1], stringFormat).toDate() : dates[1];
+      return `${Flatpickr.formatDate(startDateObj, dateFormat)} to ${Flatpickr.formatDate(endDateObj, dateFormat)}`;
+    }
+    default: return '';
+  }
+};
+
 const uiType = (props) => {
   switch (props.type) {
     case 'datetime':
       return {
         noCalendar: false,
         enableTime: true,
-        dateFormat: 'Y-m-d H:i',
-        stringFormat: 'YYYYMMDDHHmm',
+        dateFormat: props.dateFormat || 'Y-m-d H:i',
+        stringFormat: props.stringFormat || 'YYYYMMDDHHmm',
       };
     case 'time':
       return {
         noCalendar: true,
         enableTime: true,
         enableSeconds: true,
-        dateFormat: 'H:i:S',
-        stringFormat: 'HHmmss',
+        dateFormat: props.dateFormat || 'H:i:S',
+        stringFormat: props.stringFormat || 'HHmmss',
       };
     default: {
-      const { dateFormat, stringFormat } = props;
+      const stringFormat = props.stringFormat || 'YYYYMMDD';
+      const dateFormat = props.dateFormat || 'Y-m-d';
       return { dateFormat, stringFormat };
     }
   }
+};
+
+const dateCompare = (targetDates, selectDates, before = true) => {
+  const result = [];
+  targetDates.forEach((target) => {
+    const targetDate = moment(target);
+    selectDates.forEach((select) => {
+      if ((before && targetDate.isBefore(select)) ||
+          (!before && targetDate.isAfter(select)) ||
+          targetDate.isSame(select)) result.push(select);
+    });
+  });
+
+  return result;
 };
 
 class DatetimePicker extends Component {
@@ -143,6 +180,8 @@ class DatetimePicker extends Component {
     this.flatpickr = undefined;
     this.datetimeRef = undefined;
     this.type = uiType(props);
+    this.dateStr = formatDateString(
+      props.mode, props.defaultDate, this.type.dateFormat, this.type.stringFormat);
 
     this.onChange = this.onChange.bind(this);
     this.onChangeSuccess = this.onChangeSuccess.bind(this);
@@ -153,8 +192,7 @@ class DatetimePicker extends Component {
     this.onChangeCallback = this.onChangeCallback.bind(this);
 
     this.state = {
-      selectedDates: [],
-      dateStr: '',
+      dateStr: this.dateStr,
       valueChange: false,
     };
   }
@@ -177,16 +215,23 @@ class DatetimePicker extends Component {
     } = this.props;
 
     this.flatpickr = flatpickr(this.datetimeRef, props, this.type, this.onChangeCallback);
-    if (this.props.defaultDate) this.setDatetime(this.props.defaultDate);
+    // if (this.props.defaultDate) this.setDatetime(this.props.defaultDate);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.dateStr = formatDateString(
+      nextProps.mode, nextProps.defaultDate, this.type.dateFormat, this.type.stringFormat);
   }
 
   componentWillUnmount() {
     this.flatpickr.destroy();
     this.flatpickr = undefined;
     this.datetimeRef = undefined;
+    this.dateStr = undefined;
   }
 
   onChangeCallback(selectedDates, dateStr, instance) {
+    if (this.props.mode === 'range' && (!selectedDates || (selectedDates && selectedDates.length < 2))) return;
     this.setState({ selectedDates, dateStr });
     if (typeof this.props.onChange === 'function') {
       this.props.onChange(selectedDates, dateStr, instance);
@@ -205,9 +250,6 @@ class DatetimePicker extends Component {
 
   onChangeSuccess() {
     this.setDatetime(this.state.dateStr);
-    this.setState({
-      valueChange: false,
-    });
   }
 
   onKeyPress(e) {
@@ -217,16 +259,17 @@ class DatetimePicker extends Component {
   }
 
   onOpen() {
+    this.flatpickr.setDate(this.props.defaultDate, false, this.type.dateFormat);
     this.flatpickr.toggle();
     if (typeof this.props.afterOpen === 'function') {
-      this.props.afterOpen(this.state.selectedDates, this.state.dateStr, this.flatpickr);
+      this.props.afterOpen(this.props.defaultDate, this.dateStr, this.flatpickr);
     }
   }
 
   onClear() {
     this.flatpickr.clear();
     if (typeof this.props.afterClear === 'function') {
-      this.props.afterClear(this.state.selectedDates, this.state.dateStr, this.flatpickr);
+      this.props.afterClear(this.props.defaultDate, this.dateStr, this.flatpickr);
     }
   }
 
@@ -284,3 +327,4 @@ DatetimePicker.propTypes = propTypes;
 DatetimePicker.defaultProps = defaultProps;
 
 export default DatetimePicker;
+export { formatDateString, dateCompare };

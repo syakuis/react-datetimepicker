@@ -30,6 +30,7 @@ class Button extends Component {
       <DatetimePicker
         ref={(node) => { this.datetimeRef = node; }}
         onChange={(datetime, value) => this.onDatetime(datetime, value)}
+        defaultDate={this.state.datetime}
       >
         <button className="btn btn-success" type="button" onClick={this.onOpen}>
           {this.state.value || '선택'}

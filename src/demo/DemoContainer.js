@@ -28,7 +28,7 @@ class DemoContainer extends React.Component {
         value: '',
       },
       value2: {
-        datetime: [],
+        datetime: ['2011-11-30 20:10'],
         value: '',
       },
       value3: {
@@ -36,11 +36,11 @@ class DemoContainer extends React.Component {
         value: '',
       },
       range: {
-        datetime: [],
+        datetime: ['2011-11-30 10:20', '201112301020'],
         value: '',
       },
       multiple: {
-        datetime: [],
+        datetime: ['2011-11-30'],
         value: '',
       },
     };
@@ -86,7 +86,7 @@ class DemoContainer extends React.Component {
               <p>{this.state.value.value}</p>
               <DatetimePicker
                 onChange={(datetime, value) => this.onDatetime(datetime, value, 'value')}
-                defaultDate=""
+                defaultDate={this.state.value.datetime}
                 allowInput
               />
             </div>
@@ -99,7 +99,7 @@ class DemoContainer extends React.Component {
               <DatetimePicker
                 onChange={(datetime, value) => this.onDatetime(datetime, value, 'value2')}
                 type="datetime"
-                defaultDate="2011-11-30 20:10"
+                defaultDate={this.state.value2.datetime}
                 className="input-group-sm"
               />
             </div>
@@ -120,6 +120,7 @@ class DemoContainer extends React.Component {
               <DatetimePicker
                 onChange={(datetime, value) => this.onDatetime(datetime, value, 'value3')}
                 type="time"
+                defaultDate={this.state.value3.datetime}
                 readOnly
                 clickOpens={false}
               />
@@ -133,7 +134,7 @@ class DemoContainer extends React.Component {
               <DatetimePicker
                 onChange={(datetime, value) => this.onDatetime(datetime, value, 'multiple')}
                 mode="multiple"
-                defaultDate="2011-11-30"
+                defaultDate={this.state.multiple.datetime}
               />
             </div>
 
@@ -150,7 +151,7 @@ class DemoContainer extends React.Component {
                 mode="range"
                 onChange={(datetime, value) => this.onDatetime(datetime, value, 'range')}
                 type="datetime"
-                defaultDate={['2011-11-30 10:20', '201112301020']}
+                defaultDate={this.state.range.datetime}
               />
             </div>
 
