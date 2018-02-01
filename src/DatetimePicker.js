@@ -26,6 +26,8 @@ const propTypes = {
   // only mode single
   startDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
   endDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  defaultValue: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  isDefaultValue: PropTypes.bool,
 
   // flatpickr config
   mode: PropTypes.string,
@@ -54,6 +56,8 @@ const defaultProps = {
 
   startDate: undefined,
   endDate: undefined,
+  defaultValue: undefined,
+  isDefaultValue: false,
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -113,7 +117,7 @@ class DatetimePicker extends Component {
     this.onChangeCallback = this.onChangeCallback.bind(this);
 
     const dateStr = formatDateString(
-      props.mode, props.defaultDate, this.type.dateFormat);
+      props.mode, props.defaultDate || props.defaultValue, this.type.dateFormat);
 
     this.state = {
       dateStr,
@@ -132,14 +136,20 @@ class DatetimePicker extends Component {
       iconSuccess,
       iconClear,
       iconOpen,
+      startDate,
+      endDate,
+      defaultDate,
+      defaultValue,
+      isDefaultValue,
       ...props
     } = this.props;
 
-    this.flatpickr = flatpickr(this.datetimeRef, props, this.type, this.onChangeCallback);
+    this.flatpickr = flatpickr(this.datetimeRef,
+      { ...props, defaultDate: defaultDate || defaultValue }, this.type, this.onChangeCallback);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!arrayEquals(this.props.defaultDate, nextProps.defaultDate)) {
+    if (this.props.defaultDate && !arrayEquals(this.props.defaultDate, nextProps.defaultDate)) {
       this.setState({ dateStr: formatDateString(
         nextProps.mode, nextProps.defaultDate, this.type.dateFormat) });
     }
@@ -186,22 +196,24 @@ class DatetimePicker extends Component {
   }
 
   onOpen() {
-    if (this.props.mode === 'single') {
-      const defaultDate =
-        dateCompare(this.props.defaultDate, this.props.startDate, this.props.endDate)
-        || this.props.defaultDate;
-      this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
+    if (this.props.defaultDate) {
+      if (this.props.mode === 'single' && (this.props.startDate || this.props.endDate)) {
+        const defaultDate =
+          dateCompare(this.props.defaultDate, this.props.startDate, this.props.endDate)
+          || this.props.defaultDate;
+        this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
 
-      if (arrayEmpty(this.props.disable)) {
-        const disable = dayDisable(
-          defaultDate, this.props.startDate, this.props.endDate);
-        if (disable) {
-          this.flatpickr.set('disable', disable);
-          this.flatpickr.redraw();
+        if (arrayEmpty(this.props.disable)) {
+          const disable = dayDisable(
+            defaultDate, this.props.startDate, this.props.endDate);
+          if (disable) {
+            this.flatpickr.set('disable', disable);
+            this.flatpickr.redraw();
+          }
         }
+      } else {
+        this.flatpickr.setDate(this.props.defaultDate, true, this.type.dateFormat);
       }
-    } else {
-      this.flatpickr.setDate(this.props.defaultDate, true, this.type.dateFormat);
     }
 
     this.flatpickr.toggle();
@@ -209,6 +221,9 @@ class DatetimePicker extends Component {
 
   onClear() {
     this.flatpickr.clear();
+    if (this.props.isDefaultValue && this.props.defaultValue) {
+      this.setDatetime(this.props.defaultValue);
+    }
   }
 
   setDatetime(value, triggerChange = true) {

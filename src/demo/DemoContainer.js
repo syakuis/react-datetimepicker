@@ -86,7 +86,7 @@ class DemoContainer extends React.Component {
               <p>{this.state.value.value}</p>
               <DatetimePicker
                 onChange={(datetime, value) => this.onDatetime(datetime, value, 'value')}
-                defaultDate={this.state.value.datetime}
+                defaultValue={[parseDate('2013-12-26')]}
                 allowInput
               />
             </div>
@@ -120,6 +120,8 @@ class DemoContainer extends React.Component {
               <DatetimePicker
                 onChange={(datetime, value) => this.onDatetime(datetime, value, 'value3')}
                 type="time"
+                defaultValue={[parseDate('10:20:00', 'H:i:S')]}
+                isDefaultValue
                 defaultDate={this.state.value3.datetime}
                 readOnly
                 clickOpens={false}

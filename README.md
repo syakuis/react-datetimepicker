@@ -61,20 +61,47 @@ import 'font-awesome/css/font-awesome.css';
 모든 날짜 데이터는 date type 이여야 한다. `parseDate` 를 이용하여 날짜 형식으로 생성할 수 있다.
 
 ```
-children: undefined, // custom ui
-readOnly: false, // input readOnly
-type: 'date', // input type date, datetime, time
+// ui 를 직접 만들때 사용한다.
+children: PropTypes.node,
+// <input> readOnly
+readOnly: false,
+// input type date, datetime, time
+type: 'date',
+// ui 를 직접 만들때 감쌓기 위한 nodeName
+wrapper: 'div',
+className: PropTypes.string,
+style: PropTypes.shape({}),
 
-defaultDate: [],
+// button icon className
+iconSuccess: PropTypes.string,
+iconClear: PropTypes.string,
+iconOpen: PropTypes.string,
 
-iconSuccess: 'fa fa-check',
-iconClear: 'fa fa-close',
-iconOpen: 'fa fa-calendar',
+// only mode single
+startDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+endDate: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
 
-// 시작일 종료일을 이용하여 입력 제한 및 자동으로 날짜 값을 갱신할 수 있다.
-startDate: undefined,
-endDate: undefined,
+// 기본값으로 사용할 수 있다. 한번만 설정된다.
+defaultValue: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+// 선택한 날짜를 지울때 기본 값을 사용할지 여부
+isDefaultValue: false,
 ```
+
+### startDate & endDate
+
+`mode='single'` 에서만 사용할 수 있는 기능으로 두개의 날짜 선택기를 서로 비교하며 자동으로 날짜를 설정 및 일자 선택을 차단할 수 있다.
+
+즉 `startDate =  시작일` 은 `endDate = 종료일` 보다 이후 날짜를 선택할 수 없고 종료일은 반대로 선택할 수 없다. 두개가 같은 날짜인 경우 시작일은 모든 날짜를 선택할 수 있다.
+
+시작일은 있고 종료일이 없으면 시작일을 종료일에 대처한다. 반대로 종료일은 시작일에 대처된다.
+
+종료일이 시작일보단 이전이면 종료일은 제거된다. 시작일도 마찬가지다.
+
+### defaultDate & defaultValue
+
+둘 옵션 중 한개만 사용하면 된다. `defaultDate` 는 항상 변하는 날짜로 `state` 에 설정된 값으로 사용하면 되고 `defaultValue` 는 한번만 설정되는 날짜로 직접 날짜를 설정하면 된다.
+
+둘다 사용할 경우 `isDefaultValue=true` 설정하고 선택 날짜를 `clear` 버튼으로 제거할때 기본 날짜를 `defaultValue` 로 설정할 수 있다.
 
 ### flatpickr options
 

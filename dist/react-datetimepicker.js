@@ -531,6 +531,8 @@ var propTypes = {
   // only mode single
   startDate: _propTypes2.default.arrayOf(_propTypes2.default.instanceOf(Date)),
   endDate: _propTypes2.default.arrayOf(_propTypes2.default.instanceOf(Date)),
+  defaultValue: _propTypes2.default.arrayOf(_propTypes2.default.instanceOf(Date)),
+  isDefaultValue: _propTypes2.default.bool,
 
   // flatpickr config
   mode: _propTypes2.default.string,
@@ -559,6 +561,8 @@ var defaultProps = {
 
   startDate: undefined,
   endDate: undefined,
+  defaultValue: undefined,
+  isDefaultValue: false,
 
   // flatpickr config
   mode: 'single', // "single", "multiple", or "range"
@@ -621,7 +625,7 @@ var DatetimePicker = function (_Component) {
     _this.setDatetime = _this.setDatetime.bind(_this);
     _this.onChangeCallback = _this.onChangeCallback.bind(_this);
 
-    var dateStr = (0, _commons.formatDateString)(props.mode, props.defaultDate, _this.type.dateFormat);
+    var dateStr = (0, _commons.formatDateString)(props.mode, props.defaultDate || props.defaultValue, _this.type.dateFormat);
 
     _this.state = {
       dateStr: dateStr,
@@ -643,14 +647,19 @@ var DatetimePicker = function (_Component) {
           iconSuccess = _props.iconSuccess,
           iconClear = _props.iconClear,
           iconOpen = _props.iconOpen,
-          props = _objectWithoutProperties(_props, ['children', 'readOnly', 'type', 'wrapper', 'className', 'style', 'iconSuccess', 'iconClear', 'iconOpen']);
+          startDate = _props.startDate,
+          endDate = _props.endDate,
+          defaultDate = _props.defaultDate,
+          defaultValue = _props.defaultValue,
+          isDefaultValue = _props.isDefaultValue,
+          props = _objectWithoutProperties(_props, ['children', 'readOnly', 'type', 'wrapper', 'className', 'style', 'iconSuccess', 'iconClear', 'iconOpen', 'startDate', 'endDate', 'defaultDate', 'defaultValue', 'isDefaultValue']);
 
-      this.flatpickr = (0, _commons.flatpickr)(this.datetimeRef, props, this.type, this.onChangeCallback);
+      this.flatpickr = (0, _commons.flatpickr)(this.datetimeRef, _extends({}, props, { defaultDate: defaultDate || defaultValue }), this.type, this.onChangeCallback);
     }
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      if (!(0, _utils.arrayEquals)(this.props.defaultDate, nextProps.defaultDate)) {
+      if (this.props.defaultDate && !(0, _utils.arrayEquals)(this.props.defaultDate, nextProps.defaultDate)) {
         this.setState({ dateStr: (0, _commons.formatDateString)(nextProps.mode, nextProps.defaultDate, this.type.dateFormat) });
       }
     }
@@ -709,19 +718,21 @@ var DatetimePicker = function (_Component) {
   }, {
     key: 'onOpen',
     value: function onOpen() {
-      if (this.props.mode === 'single') {
-        var defaultDate = (0, _commons.dateCompare)(this.props.defaultDate, this.props.startDate, this.props.endDate) || this.props.defaultDate;
-        this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
+      if (this.props.defaultDate) {
+        if (this.props.mode === 'single' && (this.props.startDate || this.props.endDate)) {
+          var defaultDate = (0, _commons.dateCompare)(this.props.defaultDate, this.props.startDate, this.props.endDate) || this.props.defaultDate;
+          this.flatpickr.setDate(defaultDate, true, this.type.dateFormat);
 
-        if ((0, _utils.arrayEmpty)(this.props.disable)) {
-          var disable = (0, _commons.dayDisable)(defaultDate, this.props.startDate, this.props.endDate);
-          if (disable) {
-            this.flatpickr.set('disable', disable);
-            this.flatpickr.redraw();
+          if ((0, _utils.arrayEmpty)(this.props.disable)) {
+            var disable = (0, _commons.dayDisable)(defaultDate, this.props.startDate, this.props.endDate);
+            if (disable) {
+              this.flatpickr.set('disable', disable);
+              this.flatpickr.redraw();
+            }
           }
+        } else {
+          this.flatpickr.setDate(this.props.defaultDate, true, this.type.dateFormat);
         }
-      } else {
-        this.flatpickr.setDate(this.props.defaultDate, true, this.type.dateFormat);
       }
 
       this.flatpickr.toggle();
@@ -730,6 +741,9 @@ var DatetimePicker = function (_Component) {
     key: 'onClear',
     value: function onClear() {
       this.flatpickr.clear();
+      if (this.props.isDefaultValue && this.props.defaultValue) {
+        this.setDatetime(this.props.defaultValue);
+      }
     }
   }, {
     key: 'setDatetime',
